@@ -40,6 +40,10 @@ public class DataModel extends AbstractTableModel {
 		imagesList.add(f);
 		this.fireTableDataChanged();
 	}
+	
+	public Vector<File> getImages(){
+		return imagesList;
+	}
 
 	public int getColumnCount() {
 		return 4;

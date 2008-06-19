@@ -30,6 +30,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.table.TableColumn;
 
+import connect.ClientHttpRequest;
+
 
 /**
  * UpShot ¨ plugin TransferHandler application
@@ -178,8 +180,17 @@ public class Smash extends JFrame implements ActionListener{
 				sender.setEnabled(false);
 				
 				/*DO THE HTTP JOB*/
-				UpConnection up = new UpConnection();
-				
+				try {
+					ClientHttpRequest chr = new ClientHttpRequest("http://localhost:3000/");
+					
+					for(File f : model.getImages()){
+						chr.setParameter(f.getName(), f);
+						chr.post();
+					}
+					
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 				sender.setEnabled(true);
 			}
 		}
