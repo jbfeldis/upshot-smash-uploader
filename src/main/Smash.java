@@ -30,7 +30,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
 import javax.swing.table.TableColumn;
 
-import connect.ClientHttpRequest;
+import connect.UpConnection;
 
 
 /**
@@ -149,7 +149,6 @@ public class Smash extends JFrame implements ActionListener{
                 } catch (IOException e) {
                     return false;
                 }
-
                 return true;
             }
         };
@@ -180,17 +179,24 @@ public class Smash extends JFrame implements ActionListener{
 				sender.setEnabled(false);
 				
 				/*DO THE HTTP JOB*/
-				try {
-					ClientHttpRequest chr = new ClientHttpRequest("http://localhost:3000/");
+				//try {
+					UpConnection upc = new UpConnection();
+					//ClientHttpRequest chr = new ClientHttpRequest("http://localhost:3000/fr/session");
+					//chr.setParameter("email", "test@test.com");
+					//chr.setParameter("password", "test");
+					//chr.post();
 					
-					for(File f : model.getImages()){
-						chr.setParameter(f.getName(), f);
-						chr.post();
-					}
+//					for(File f : model.getImages()){
+//						chr.setParameter(f.getName(), f);
+//						
+//						chr.post();
+//					}
 					
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				} finally{
+//					sender.setEnabled(true);	
+//				}
 				sender.setEnabled(true);
 			}
 		}

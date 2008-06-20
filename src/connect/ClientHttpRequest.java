@@ -72,8 +72,10 @@ public class ClientHttpRequest {
   public ClientHttpRequest(URLConnection connection) throws IOException {
     this.connection = connection;
     connection.setDoOutput(true);
+//    connection.setRequestProperty("Content-Type",
+//                                  "multipart/form-data; boundary=" + boundary);
     connection.setRequestProperty("Content-Type",
-                                  "multipart/form-data; boundary=" + boundary);
+            "text/xml; boundary=" + boundary);
   }
 
   /**
