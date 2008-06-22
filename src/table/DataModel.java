@@ -6,7 +6,7 @@
  * http://www.upshotit.com
  * 
  */
-package main;
+package table;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,8 +15,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -30,14 +28,14 @@ public class DataModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	private String[] columnNames = {"", "Name", "Format", "size"};
 	private Vector<File> imagesList;
-	private ImageIcon icon=null;
 	
 	public DataModel(){
 		imagesList=new Vector<File>();
 	}
 	
 	public void add(File f){
-		imagesList.add(f);
+		if(getMIMEType(f).substring(0, 5).equals("image"))
+			imagesList.add(f);
 		this.fireTableDataChanged();
 	}
 	
@@ -59,7 +57,7 @@ public class DataModel extends AbstractTableModel {
 
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		switch(columnIndex){
-		case 0: return "X";//new ImgFButton(imagesList.elementAt(rowIndex)).get(); 
+		case 0: return null;
 		case 1: return imagesList.elementAt(rowIndex).getName();
 		case 2: return getMIMEType(imagesList.elementAt(rowIndex)) ;
 		case 3: return imagesList.elementAt(rowIndex).length()/1024+"Ko";
@@ -67,7 +65,7 @@ public class DataModel extends AbstractTableModel {
 		return "ERROR";
 	}
 
-	public static String getMIMEType(File file){
+	private static String getMIMEType(File file){
 	   if(file.isDirectory()){return "repertoire";}
 	   if(!file.exists()){return "fichier inexistant";}
 	   try{
@@ -79,31 +77,5 @@ public class DataModel extends AbstractTableModel {
 	   }catch(IOException ioe){
 	      return ioe.getMessage();
 	      }
-	}
-	
-	public ImageIcon getIcon(){
-		if(icon==null){
-			URL url = this.getClass().getResource("/images/cross.png");
-			icon = new ImageIcon(url);
-		}
-		return icon;
-	}
-	
-	class ImgFButton{
-		private File file;
-		private JButton del;
-		
-		public ImgFButton(File f){
-			file=f;
-			del=new JButton(icon);
-		}
-		
-		public  File getFile(){
-			return file;
-		}
-		
-		public JButton get(){
-			return del;
-		}
 	}
 }

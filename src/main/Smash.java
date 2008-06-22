@@ -9,6 +9,7 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -28,7 +30,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+
+import table.ButtonCellEditor;
+import table.ButtonCellRender;
+import table.DataModel;
+
 
 import connect.UpConnection;
 
@@ -62,25 +71,36 @@ public class Smash extends JFrame implements ActionListener{
 		
 		super("UpShot SMASH");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(false);
         
         pane = new JPanel();
-        
         desk = new JDesktopPane();
+        model = new DataModel();
+        table = new JTable(model);
+        scroll = new JScrollPane(table);
+        
         desk.setSize(300, 250);
         desk.setRequestFocusEnabled(true);
         desk.requestFocus();
         
-        model = new DataModel();
-        table = new JTable(model);
+        scroll.setPreferredSize(new Dimension(300,100));
+
 		table.setAutoCreateRowSorter(false);
 		table.setCellSelectionEnabled(true);
-        scroll = new JScrollPane(table);
-        scroll.setPreferredSize(new Dimension(300,100));
 		table.setFillsViewportHeight(true);
 		table.setAutoscrolls(true);
+		table.setDoubleBuffered(true);
+		table.setBackground(Color.WHITE);
+		table.setGridColor(Color.WHITE);
+		table.setEnabled(true);
+		
+        TableCellRenderer cellRender = new ButtonCellRender();
+        TableCellEditor cellEditor = new ButtonCellEditor(new JCheckBox());
 		
 		TableColumn column = table.getColumnModel().getColumn(0);
 		column.setPreferredWidth(5);
+		column.setCellRenderer(cellRender);
+		column.setCellEditor(cellEditor);
 		
 		column = table.getColumnModel().getColumn(1);
 		column.setPreferredWidth(145);
@@ -180,23 +200,9 @@ public class Smash extends JFrame implements ActionListener{
 				
 				/*DO THE HTTP JOB*/
 				//try {
-					UpConnection upc = new UpConnection();
-					//ClientHttpRequest chr = new ClientHttpRequest("http://localhost:3000/fr/session");
-					//chr.setParameter("email", "test@test.com");
-					//chr.setParameter("password", "test");
-					//chr.post();
-					
-//					for(File f : model.getImages()){
-//						chr.setParameter(f.getName(), f);
-//						
-//						chr.post();
-//					}
-					
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				} finally{
-//					sender.setEnabled(true);	
-//				}
+					UpConnection uc = new UpConnection();
+					uc.getUserInfos();
+
 				sender.setEnabled(true);
 			}
 		}
