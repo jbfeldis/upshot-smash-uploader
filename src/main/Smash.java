@@ -149,15 +149,10 @@ public class Smash extends JFrame implements ActionListener{
                 }
                 
                 Transferable t = support.getTransferable();
-
-                /*
-                 * TODO list comporte uniquement les item droppée actuellement
-                 * imageList comporte la totalité
-                 * */
                 
                 try {
                 	DataFlavor df = DataFlavor.javaFileListFlavor;
-                	List<File> list = (List<File>)t.getTransferData(df);
+                	List<File> list = (List<File>)t.getTransferData(df);//list are the items we have just dropped
                 	
                     for (File f : list) {
                     	model.add(f);
@@ -199,9 +194,10 @@ public class Smash extends JFrame implements ActionListener{
 				sender.setEnabled(false);
 				
 				/*DO THE HTTP JOB*/
-				//try {
 					UpConnection uc = new UpConnection();
-					uc.getUserInfos();
+					uc.setup();
+					for(File f : model.getImages())
+						uc.sendData(f);
 
 				sender.setEnabled(true);
 			}
