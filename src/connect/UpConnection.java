@@ -16,7 +16,6 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * HTTP conneciton module, to permit authentication and thus sending of datas 
@@ -74,29 +73,20 @@ public class UpConnection {
 			
 			osr = new OutputStreamWriter(connection.getOutputStream());
 			osr.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-			
-			/*content type*/
-		    URL url = f.toURI().toURL();
-		    URLConnection fcon = url.openConnection();
-		    
-		    System.out.println(f.getName());
-		    System.out.println(fcon.getContentType());
 		    
 		    /*convert the file to 64base format*/
 		    FileInputStream fis = new FileInputStream(f);
-		    
-		    String file="";
-			int ch ;
 
-			ch = fis.read();
-			while(ch!=-1){
-				ch = fis.read();
-				file+=(char)ch;
-			}
+		    byte[] buffer = new byte[(int)f.length()];
+		    fis.read(buffer);
+		    fis.close();
+		    String encode = new sun.misc.BASE64Encoder().encode(buffer); //Base64.encode(buffer);
 		    
+		    /*Then create the xml file to send, with encoded file inside*/
 			osr.write("<upshot>");
-			osr.write("<title>"+f.getName()+"</title>");
-			osr.write("<uploaded_data>"+new sun.misc.BASE64Encoder().encode(file.getBytes())+"</uploaded_data>");
+			osr.write("<title>"+f.getName().toString()+"</title>");
+			osr.write("<size>"+f.length()+"</size>");
+			osr.write("<javafile>"+encode+"</javafile>");
 			osr.write("</upshot>");
 			osr.flush();
 			osr.close();
@@ -104,7 +94,8 @@ public class UpConnection {
 			/*You have to read the response of the host to make the changes happen*/
 			isr = new InputStreamReader(connection.getInputStream());
 			int c ;
-
+			
+			System.out.println("API responding...");
 			c = isr.read();
 			while(c!=-1){
 				System.out.print((char)c);
