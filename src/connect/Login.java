@@ -1,0 +1,174 @@
+/**
+ * Studio Melipone
+ * June 2008
+ * 
+ * plugin for UpShot
+ * http://www.upshotit.com
+ * 
+ */
+package connect;
+
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+public class Login extends JDialog implements ActionListener {
+
+	private static final long serialVersionUID = 1L;
+	private GridBagLayout gbl;
+	private GridBagConstraints gbc;
+	private JLabel loginlab, passwdlab, message;
+	private JTextField loginbox;
+	private JPasswordField passwdbox;
+	private JButton ok, cancel;
+	private String login, passwd;
+	private UpConnection uc;
+	private Integer answer;
+	
+	public Login(JFrame origin, UpConnection uc){
+		super(origin, "Authentication");
+		this.setModal(true);
+		this.setResizable(false);
+		
+		answer=0;
+		this.uc=uc;
+		
+		loginbox = new JTextField(10);
+		passwdbox= new JPasswordField(10);
+			passwdbox.setActionCommand("OK");
+			passwdbox.addActionListener(this);
+		ok = new JButton("OK");
+			ok.addActionListener(this);
+		cancel = new JButton("Cancel");
+			cancel.addActionListener(this);
+		
+		loginlab = new JLabel("E-mail :");
+			loginlab.setLabelFor(loginbox);
+		passwdlab = new JLabel("Password :");
+			passwdlab.setLabelFor(passwdbox);
+		message = new JLabel();
+			Font font = new Font("Verdana",Font.BOLD,10);
+			message.setFont(font);
+
+		
+		gbl = new GridBagLayout();
+		gbc = new GridBagConstraints();
+		Insets ins = new Insets(2, 3, 0, 3);
+		
+		gbc.gridx=0;
+		gbc.gridy=0;
+		gbc.insets=ins;
+		gbc.gridwidth=1;
+		gbc.ipady=20;
+		gbc.anchor=GridBagConstraints.NORTHEAST;
+		gbl.setConstraints(loginlab, gbc);
+		
+		gbc.gridx=1;
+		gbc.gridwidth=2;
+		gbc.ipady=0;
+		gbc.anchor=GridBagConstraints.NORTHWEST;
+		gbl.setConstraints(loginbox, gbc);
+		
+		gbc.gridx=0;
+		gbc.gridy=1;
+		gbc.gridwidth=1;
+		gbc.ipady=5;
+		gbc.anchor=GridBagConstraints.SOUTHEAST;
+		gbl.setConstraints(passwdlab, gbc);
+		
+		gbc.gridx=1;
+		gbc.gridwidth=2;
+		gbc.ipady=0;
+		gbc.anchor=GridBagConstraints.SOUTHWEST;
+		gbl.setConstraints(passwdbox, gbc);
+		
+		gbc.gridy=2;
+		ins = new Insets(0, 3, 0, 0);
+		gbc.insets=ins;
+		gbc.anchor=GridBagConstraints.CENTER;
+		gbl.setConstraints(message, gbc);
+		
+		gbc.gridx=0;
+		gbc.gridy=3;
+		ins = new Insets(2, 3, 5, 3);
+		gbc.insets=ins;
+		gbc.ipady=0;
+		gbc.anchor=GridBagConstraints.SOUTHWEST;
+		gbl.setConstraints(cancel, gbc);
+		
+		gbc.gridx=2;
+		gbc.gridwidth=1;
+		gbc.anchor=GridBagConstraints.SOUTHEAST;
+		gbl.setConstraints(ok, gbc);
+		
+		this.getContentPane().setLayout(gbl);
+		this.add(loginlab);
+		this.add(loginbox);
+		this.add(passwdlab);
+		this.add(passwdbox);
+		this.add(message);
+		this.add(cancel);
+		this.add(ok);
+		
+		init();
+		this.pack();
+		this.setLocationRelativeTo(origin);
+		this.setVisible(true);
+	}
+	
+	public void actionPerformed(ActionEvent ae) {
+		String s = ae.getActionCommand();
+		if(s.equals("OK")){
+			login=loginbox.getText();
+			
+			char [] pass = new char[128];
+			pass = passwdbox.getPassword();
+			
+			for(char c : pass)
+				passwd+=c;
+			pass=null;
+			
+			if(login.isEmpty() || passwd.isEmpty()){
+				message.setForeground(Color.decode("#FF6600"));
+				message.setText("Some fields are empty");
+				this.pack();
+			}
+			else{
+				uc.setUser(login, passwd);
+				uc.setup("users/getId.xml");
+				if((answer=uc.getId())<=0){
+					init();
+					message.setForeground(Color.RED);
+					message.setText("Wrong login or password");
+					this.pack();
+				} else this.dispose();
+			}
+		}
+		else if (s.equals("Cancel")){
+			this.dispose();
+		}
+	}
+	
+	public void init(){
+		loginbox.setText("");
+		passwdbox.setText("");
+		login = new String("");
+		passwd = new String("");
+		message.setText("");
+	}
+	
+	public int getAnswer(){
+		return answer;
+	}
+}

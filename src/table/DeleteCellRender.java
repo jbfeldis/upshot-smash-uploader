@@ -9,13 +9,13 @@
 package table;
 
 import java.awt.Component;
-import java.net.URL;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
+
+import main.Smash;
 
 /**
  * Create a special cell render for the first column of Smash images table
@@ -24,14 +24,15 @@ import javax.swing.table.TableCellRenderer;
  * @author Gregory Durelle
  *
  */
-public class ButtonCellRender extends JButton implements TableCellRenderer{
+public class DeleteCellRender extends JButton implements TableCellRenderer{
 
 	private static final long serialVersionUID = 1L;
-	private ImageIcon icon=null;
 	
-	public ButtonCellRender(){
+	public DeleteCellRender(){
 		this.setOpaque(true);
-
+	    this.setIcon(Smash.getIcon("cross.png"));
+		this.setBorderPainted(false);
+		this.setEnabled(true);
 	}
 	
 	public Component getTableCellRendererComponent(JTable table, Object value,
@@ -44,23 +45,6 @@ public class ButtonCellRender extends JButton implements TableCellRenderer{
 	        setForeground(table.getForeground());
 	        setBackground(UIManager.getColor("Button.background"));
 	      }
-	    
-		this.setIcon(getDelIcon());
-		this.setBorderPainted(true);
-		this.setEnabled(true);
 		return this;
 	}
-	
-	/**
-	 * Helping method to get the deletion button from its package
-	 * @return ImageIcon using the package path
-	 */
-	private ImageIcon getDelIcon(){
-		if(icon==null){
-			URL url = this.getClass().getResource("/images/cross.png");
-			icon = new ImageIcon(url);
-		}
-		return icon;
-	}
-
 }

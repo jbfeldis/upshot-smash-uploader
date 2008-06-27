@@ -8,7 +8,6 @@
  */
 package connect;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +15,8 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import main.ImageFile;
 
 /**
  * HTTP conneciton module, to permit authentication and thus sending of datas 
@@ -26,26 +27,36 @@ public class UpConnection {
 
 	private URL url;
 	private HttpURLConnection connection = null;
-    private String username, password, userPass, encoding;
+    private String userPass, encoding;
     private InputStreamReader isr=null;
     private OutputStreamWriter osr=null;
+    private boolean logged, ready;
 	
-	public UpConnection() {
-		username = "test@test.com";
-		password = "test";
-		userPass = username+":"+password;
+    public UpConnection(){
+    	logged=false;
+    	ready=false;
+    }
+    
+    /**
+     * This set the login and password the user will use
+     * The login is the users email.
+     * @param log The Login object used to retrieve the login and password
+     */
+    public void setUser(String login, String passwd){
+		userPass = login+":"+passwd;
 		encoding = new sun.misc.BASE64Encoder().encode(userPass.getBytes());
-	}
+		logged=true;
+    }
 	
 	/**
 	 * Setup connection with needed headers and user authentication properties
 	 * charset UTF-8
 	 * XML datas
-	 * 
+	 * @param path The route used to access to wanted resource
 	 */
-	public void setup(){
+	public void setup(String path){
 		try {
-			url = new URL("http://localhost:3000/en/users/3/upshots.xml");
+			url = new URL("http://localhost:3000/en/"+path);
 			connection=(HttpURLConnection)url.openConnection();
 			connection.setAllowUserInteraction(true);
 			//connection.setRequestProperty("charset","utf-8");
@@ -56,6 +67,7 @@ public class UpConnection {
 	        connection.setRequestProperty("Authorization", "Basic " + encoding);
 	        connection.setDoInput(true);
 	        connection.setDoOutput(true);
+	        ready=true;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -66,76 +78,93 @@ public class UpConnection {
 	/**
 	 * Post request to setted up host
 	 * it send the file given, with all its informations
+	 * @param f The file that will be sent
+	 * 
 	 */
-	public void sendData(File f){
-		try {
-			connection.setRequestMethod("POST");
-			
-			osr = new OutputStreamWriter(connection.getOutputStream());
-			osr.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-		    
-		    /*convert the file to 64base format*/
-		    FileInputStream fis = new FileInputStream(f);
-
-		    byte[] buffer = new byte[(int)f.length()];
-		    fis.read(buffer);
-		    fis.close();
-		    String encode = new sun.misc.BASE64Encoder().encode(buffer); //Base64.encode(buffer);
-		    
-		    /*Then create the xml file to send, with encoded file inside*/
-			osr.write("<upshot>");
-			osr.write("<title>"+f.getName().toString()+"</title>");
-			osr.write("<size>"+f.length()+"</size>");
-			osr.write("<javafile>"+encode+"</javafile>");
-			osr.write("</upshot>");
-			osr.flush();
-			osr.close();
-			
-			/*You have to read the response of the host to make the changes happen*/
-			isr = new InputStreamReader(connection.getInputStream());
-			int c ;
-			
-			System.out.println("API responding...");
-			c = isr.read();
-			while(c!=-1){
-				System.out.print((char)c);
+	public void sendData(ImageFile imf){
+		if(logged & ready){
+			try {
+				connection.setRequestMethod("POST");
+				
+				osr = new OutputStreamWriter(connection.getOutputStream());
+				osr.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+			    
+			    /*convert the file to 64base format*/
+			    FileInputStream fis = new FileInputStream(imf.getFile());
+	
+			    byte[] buffer = new byte[(int)imf.getFile().length()];
+			    fis.read(buffer);
+			    fis.close();
+			    String encode = new sun.misc.BASE64Encoder().encode(buffer); //Base64.encode(buffer);
+			    
+			    /*Then create the xml file to send, with encoded file inside*/
+				osr.write("<upshot>");
+				osr.write("<title>"+imf.getTitle()+"</title>");
+				osr.write("<size>"+imf.getFile().length()+"</size>");
+				osr.write("<javafile>"+encode+"</javafile>");
+				osr.write("</upshot>");
+				osr.flush();
+				osr.close();
+	
+				/*You have to read the response of the host to make the changes happen*/
+				isr = new InputStreamReader(connection.getInputStream());
+				int c ;
+				
+				System.out.println("API responding...");
 				c = isr.read();
+				while(c!=-1){
+					System.out.print((char)c);
+					c = isr.read();
+				}
+				isr.close();
+				
+			} catch (IOException e) {
+	//			e.printStackTrace();
+			} 
+			finally{
+				connection.disconnect();
 			}
-			
-			isr.close();
-			
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-		finally{
-			connection.disconnect();
 		}
 	}
 	
 	/**
 	 * Simple get request to retrieve informations from
 	 * setted up host
+	 * @return A code value for what happened : 
+	 *  0 : getUser() and/or setup() not yet called
+	 *  c : ok
+	 * -1 : login failed
 	 */
-	public void getUserInfos(){
-		
-		try {
-			
-			connection.setRequestMethod("GET");
-			
-			isr = new InputStreamReader(connection.getInputStream());
-			int c ;
-
-			c = isr.read();
-			while(c!=-1){
-				System.out.print((char)c);
+	public int getId(){
+		if(logged & ready){
+			try {
+				connection.setRequestMethod("GET");
+				isr = new InputStreamReader(connection.getInputStream());
+				int c = 0;
+	
 				c = isr.read();
+				String s = new String();
+				while(c!=-1){
+					s += (char)c;
+					c = isr.read();
+				}
+				isr.close();
+				return Integer.parseInt(s);
+			} catch (IOException e) {
+				return -1;
+			} 
+			finally{
+				connection.disconnect();
 			}
-			isr.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} 
-		finally{
-			connection.disconnect();
 		}
+		return 0;
+	}
+
+	public boolean isLogged() {
+		return logged;
+	}
+
+	public boolean isReady() {
+		return ready;
 	}
 }
