@@ -135,6 +135,9 @@ public class ImageEditor extends JDialog implements ActionListener {
 		this.setVisible(true);
 	}
 	
+	/**
+	 * Will draw a thumbnail of the image
+	 */
 	public void paint(Graphics g){
 		super.paintComponents(g);
 		
@@ -149,8 +152,10 @@ public class ImageEditor extends JDialog implements ActionListener {
 		this.dispose();
 	}
 	
+	/**
+	 * used by the editcelleditor to apply changes on the model
+	 */
 	public String getTitle(){
 		return new_title;
 	}
-	
 }

@@ -45,6 +45,8 @@ public class UpConnection {
     public void setUser(String login, String passwd){
 		userPass = login+":"+passwd;
 		encoding = new sun.misc.BASE64Encoder().encode(userPass.getBytes());
+		System.out.println(login+":"+passwd);
+		System.out.println("-----------==========>"+encoding);
 		logged=true;
     }
 	
@@ -130,10 +132,10 @@ public class UpConnection {
 	/**
 	 * Simple get request to retrieve informations from
 	 * setted up host
-	 * @return A code value for what happened : 
-	 *  0 : getUser() and/or setup() not yet called
-	 *  c : ok
-	 * -1 : login failed
+	 * @return A code value for what happened : <br />
+	 *  0 : getUser() and/or setup() not yet called<br />
+	 *  c : ok<br />
+	 * -1 : login failed<br />
 	 */
 	public int getId(){
 		if(logged & ready){
@@ -160,10 +162,20 @@ public class UpConnection {
 		return 0;
 	}
 
+	/**
+	 * If user's login and token information are given.
+	 * @return true if user's informations have already been given, false otherwise
+	 * @see setUser(String login, String passwd)
+	 */
 	public boolean isLogged() {
 		return logged;
 	}
 
+	/**
+	 * If the connection is opened with the previously given parameters
+	 * @return true if connection parameters have already been given through the setup(String path) method
+	 * @see setup(String path)
+	 */
 	public boolean isReady() {
 		return ready;
 	}

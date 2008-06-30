@@ -15,6 +15,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.Serializable;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -23,9 +24,17 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class Login extends JDialog implements ActionListener {
+/**
+ * Dialog box used to register login and password/token in order to get the user's id
+ * once the id retrieved, it will be used to compose the path to wanted resources.
+ * This object is serializable to let the user register its login and token, thus, he wont have 
+ * give it everytime.
+ * @author Gregory Durelle
+ *
+ */
+public class Login extends JDialog implements ActionListener, Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 3399486907330854821L;
 	private GridBagLayout gbl;
 	private GridBagConstraints gbc;
 	private JLabel loginlab, passwdlab, message;
@@ -33,9 +42,15 @@ public class Login extends JDialog implements ActionListener {
 	private JPasswordField passwdbox;
 	private JButton ok, cancel;
 	private String login, passwd;
-	private UpConnection uc;
+	private char [] pass;
+	private transient UpConnection uc;//need to be transient because HttpURLConnection can't be serialized 
 	private Integer answer;
 	
+	/**
+	 * 
+	 * @param origin will always be an instance of Smash class
+	 * @param uc instane of UpConnection class (created in Smash)
+	 */
 	public Login(JFrame origin, UpConnection uc){
 		super(origin, "Authentication");
 		this.setModal(true);
@@ -43,6 +58,8 @@ public class Login extends JDialog implements ActionListener {
 		
 		answer=0;
 		this.uc=uc;
+		login=new String();
+		passwd=new String();
 		
 		loginbox = new JTextField(10);
 		passwdbox= new JPasswordField(10);
@@ -61,7 +78,6 @@ public class Login extends JDialog implements ActionListener {
 			Font font = new Font("Verdana",Font.BOLD,10);
 			message.setFont(font);
 
-		
 		gbl = new GridBagLayout();
 		gbc = new GridBagConstraints();
 		Insets ins = new Insets(2, 3, 0, 3);
@@ -130,9 +146,12 @@ public class Login extends JDialog implements ActionListener {
 	public void actionPerformed(ActionEvent ae) {
 		String s = ae.getActionCommand();
 		if(s.equals("OK")){
-			login=loginbox.getText();
+			login=new String();
+			passwd=new String();
+			answer=0;
 			
-			char [] pass = new char[128];
+			login=loginbox.getText();
+			pass = new char[128];
 			pass = passwdbox.getPassword();
 			
 			for(char c : pass)
@@ -146,7 +165,7 @@ public class Login extends JDialog implements ActionListener {
 			}
 			else{
 				uc.setUser(login, passwd);
-				uc.setup("users/getId.xml");
+				uc.setup("users/get_id.xml");
 				if((answer=uc.getId())<=0){
 					init();
 					message.setForeground(Color.RED);
@@ -160,14 +179,32 @@ public class Login extends JDialog implements ActionListener {
 		}
 	}
 	
+	/**
+	 * After unserialization of login params, the Login object thus created
+	 * need to know the UpConnection params (because it is not serialized with the Login object)
+	 * @param uc The current UpConnection 
+	 */
+	public void setConnectionConfig(UpConnection uc){
+		this.uc=uc;
+	}
+	
+	/**
+	 * Clear all fields. 
+	 * Usefull for initialization
+	 */
 	public void init(){
 		loginbox.setText("");
 		passwdbox.setText("");
 		login = new String("");
 		passwd = new String("");
 		message.setText("");
+		pass = new char[128];
 	}
 	
+	/**
+	 * Used to retrieve either the user id, or the error code.
+	 * @return the user's id or the error code
+	 */
 	public int getAnswer(){
 		return answer;
 	}

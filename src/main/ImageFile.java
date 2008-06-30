@@ -10,6 +10,12 @@ package main;
 
 import java.io.File;
 
+/**
+ * This class is used as a structure to easily associate an image file
+ * with the title the user wanna give to the future upshot.
+ * @author Gregory Durelle
+ *
+ */
 public class ImageFile {
 	private File file;
 	private String title;

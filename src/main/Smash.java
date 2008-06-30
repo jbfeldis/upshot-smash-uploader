@@ -19,7 +19,11 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.List;
 
@@ -65,12 +69,18 @@ public class Smash extends JFrame implements ActionListener{
 	private TransferHandler handler;
 	private UpConnection uc;
 	private Login log;
+	private String home, folder, file;
 
 	public Smash(){
-		
 		super("UpShot SMASH");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
+		
+		home = System.getProperty("user.home");
+		folder = "/Smash/";
+		file = "smash.config";
+		File f = new File(home+folder);//create the folder at the right place
+		f.mkdir();
 		
 		/*
 		 * STEP 1:  we prepare the visual aspect of the application
@@ -184,9 +194,8 @@ public class Smash extends JFrame implements ActionListener{
         /*
          * STEP 2 : The transferHandler
          * 
-         * the whole functionnality of the application is resume by this transferHandler
+         * One of the fundamental functionnality of the application is this transferHandler
          */
-
         handler = new TransferHandler() {
 
     		private static final long serialVersionUID = 1L;
@@ -228,7 +237,6 @@ public class Smash extends JFrame implements ActionListener{
         
         this.setTransferHandler(handler);
         desk.setTransferHandler(handler);
-        
     	this.setVisible(true);
         
 		/*
@@ -240,15 +248,20 @@ public class Smash extends JFrame implements ActionListener{
 		uc = new UpConnection();
 		
 		/*
-		 * TODO 3 check if login information already given in the past
-		 * serialization of login and passwd.
-		 * encryption
+		 * check if login information already given in the past
+		 * and load it if yes
 		 * */
+
+		File fconfig = new File(home+folder+file);
+		if(fconfig.exists())
+			load();
+		else
+			log = new Login(this, uc);
 		
-//		log = new Login(this, uc);
-//		
-//		if(log.getAnswer()>0)
-//			sender.setEnabled(true);
+		if(log.getAnswer()>0){
+			sender.setEnabled(true);
+			save();
+		}
 		
 		desk.add(new Label("READY !"));
 	}
@@ -283,18 +296,56 @@ public class Smash extends JFrame implements ActionListener{
 		}
 		else if(s.equals("login")){
 			
-			if(log==null)
-				log = new Login(this, uc);
-			else log.setVisible(true);
-			
 			sender.setEnabled(false);
-				
-			if(log.getAnswer()>0)
+			log.setVisible(true);
+			
+			if(log.getAnswer()>0){
 				sender.setEnabled(true);
+				save();
+			}
 		}
 		else if(s.equals("help")){
 			JOptionPane.showMessageDialog(this, "about text", "About", JOptionPane.INFORMATION_MESSAGE, null);
 		}
+	}
+	
+	/**
+	 * Save login information in serialized file
+	 */
+	public void save(){
+		FileOutputStream fos = null;
+		ObjectOutputStream out = null;
+
+		try {
+			fos = new FileOutputStream(home+folder+file);
+			out = new ObjectOutputStream(fos);
+			out.writeObject(log);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Load serialized file
+	 * and recreate login object thanks to it
+	 */
+	public void load(){
+		FileInputStream fis = null;
+		ObjectInputStream in = null;
+		try{
+			fis = new FileInputStream(home+folder+file);
+			in = new ObjectInputStream(fis);
+		    log = (Login)in.readObject();
+		    in.close();
+		    }
+		catch(IOException ex){
+		    ex.printStackTrace();
+		}
+		catch(ClassNotFoundException ex){
+		   ex.printStackTrace();
+		}
+	    log.setConnectionConfig(uc);
 	}
 	
 	/**

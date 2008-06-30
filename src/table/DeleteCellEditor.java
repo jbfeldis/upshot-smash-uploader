@@ -17,6 +17,12 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
 
+/**
+ * cell editor to implements button functionnality to a cell of the table in order delete the associated row
+ * 
+ * @author Gregory Durelle
+ *
+ */
 public class DeleteCellEditor extends DefaultCellEditor implements ActionListener {
 
 	private static final long serialVersionUID = 1L;

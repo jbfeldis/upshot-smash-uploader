@@ -21,7 +21,7 @@ import main.ImageEditor;
 
 /**
  * cell editor to implements button functionnality to a cell of the table
- * in order to lauchn a dialog box.
+ * in order to lauchn an edition dialog box.
  * 
  * @author Gregory Durelle
  *
