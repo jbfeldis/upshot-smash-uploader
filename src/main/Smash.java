@@ -26,6 +26,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -103,8 +104,9 @@ public class Smash extends JFrame implements ActionListener{
         scroll.setPreferredSize(new Dimension(300,100));
 
 		table.setAutoCreateRowSorter(false);
-		table.setCellSelectionEnabled(true);
+		table.setCellSelectionEnabled(false);
 		table.setColumnSelectionAllowed(false);
+		table.setRowSelectionAllowed(false);
 		table.setFillsViewportHeight(true);
 		table.setAutoscrolls(true);
 		table.setDoubleBuffered(true);
@@ -123,19 +125,23 @@ public class Smash extends JFrame implements ActionListener{
 		
 		/*Column Title*/
 		column = table.getColumnModel().getColumn(1);
-		column.setPreferredWidth(145);
+		column.setPreferredWidth(140);
+		column.setResizable(false);
 		
 		/*Column Format*/
 		column = table.getColumnModel().getColumn(2);
-		column.setPreferredWidth(75);
+		column.setPreferredWidth(80);
+		column.setResizable(false);
 		
 		/*Column Size*/
 		column = table.getColumnModel().getColumn(3);
 		column.setPreferredWidth(70);
+		column.setResizable(false);
 		
 		/*Column Edit*/
 		column = table.getColumnModel().getColumn(4);
 		column.setPreferredWidth(5);
+		column.setResizable(false);
         EditCellRender editCellRender = new EditCellRender();
         EditCellEditor editCellEditor = new EditCellEditor(model);
 		column.setCellRenderer(editCellRender);
@@ -275,6 +281,7 @@ public class Smash extends JFrame implements ActionListener{
         });
 	}
 
+	@SuppressWarnings("unchecked")
 	public void actionPerformed(ActionEvent ae) {
 		String s = ae.getActionCommand();
 		if(s.equals("SEND")){
@@ -288,8 +295,12 @@ public class Smash extends JFrame implements ActionListener{
 				 * send each file with its informations to create drafts upshots
 				 * */
 				uc.setup("users/"+log.getAnswer()+"/upshots.xml");
-				for(ImageFile imf : model.getImages())
+				
+				Vector<ImageFile> imClone = (Vector<ImageFile>)model.getImages().clone();
+				for(ImageFile imf : imClone){
 					uc.sendData(imf);
+					model.remove(imf);
+				}
 
 				sender.setEnabled(true);
 			}

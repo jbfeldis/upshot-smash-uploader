@@ -45,8 +45,6 @@ public class UpConnection {
     public void setUser(String login, String passwd){
 		userPass = login+":"+passwd;
 		encoding = new sun.misc.BASE64Encoder().encode(userPass.getBytes());
-		System.out.println(login+":"+passwd);
-		System.out.println("-----------==========>"+encoding);
 		logged=true;
     }
 	
@@ -102,6 +100,7 @@ public class UpConnection {
 			    /*Then create the xml file to send, with encoded file inside*/
 				osr.write("<upshot>");
 				osr.write("<title>"+imf.getTitle()+"</title>");
+				osr.write("<file_name>"+imf.getFile().getName()+"</file_name>");
 				osr.write("<size>"+imf.getFile().length()+"</size>");
 				osr.write("<javafile>"+encode+"</javafile>");
 				osr.write("</upshot>");
@@ -112,10 +111,8 @@ public class UpConnection {
 				isr = new InputStreamReader(connection.getInputStream());
 				int c ;
 				
-				System.out.println("API responding...");
 				c = isr.read();
 				while(c!=-1){
-					System.out.print((char)c);
 					c = isr.read();
 				}
 				isr.close();

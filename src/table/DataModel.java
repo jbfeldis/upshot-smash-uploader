@@ -25,7 +25,7 @@ import main.ImageFile;
  * @author Gregory Durelle
  *
  */
-public class DataModel extends AbstractTableModel {
+public class DataModel extends AbstractTableModel{
 	
 	private static final long serialVersionUID = 1L;
 	private String[] columnNames = {"", "Title", "Format", "size", ""};
@@ -43,6 +43,11 @@ public class DataModel extends AbstractTableModel {
 	
 	public void remove(int index){
 		imagesList.remove(index);
+		this.fireTableDataChanged();
+	}
+	
+	public void remove(ImageFile imf){
+		imagesList.remove(imf);
 		this.fireTableDataChanged();
 	}
 	
@@ -81,6 +86,11 @@ public class DataModel extends AbstractTableModel {
 		case 4: return null;
 		}
 		return "ERROR";
+	}
+	
+	public void setValueAt(Object newTitle, int rowIndex, int columnIndex) {
+		if(columnIndex==1)
+			imagesList.elementAt(rowIndex).setTitle((String)newTitle);
 	}
 
 	/**

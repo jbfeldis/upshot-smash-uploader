@@ -186,6 +186,8 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	 */
 	public void setConnectionConfig(UpConnection uc){
 		this.uc=uc;
+		uc.setUser(login, passwd);
+		uc.setup("users/get_id.xml");
 	}
 	
 	/**

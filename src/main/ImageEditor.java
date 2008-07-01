@@ -65,7 +65,7 @@ public class ImageEditor extends JDialog implements ActionListener {
 			else image=bi.getScaledInstance(-1, scale, Image.SCALE_SMOOTH);
 			
 		} catch (IOException ioe) {
-			System.err.println("--> "+ioe.getMessage());
+			
 		}
 		
 		panel = new JPanel();
