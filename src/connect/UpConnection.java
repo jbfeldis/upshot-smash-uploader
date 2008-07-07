@@ -176,4 +176,40 @@ public class UpConnection {
 	public boolean isReady() {
 		return ready;
 	}
+	
+//	/**
+//	 * Update the user's profile
+//	 */
+//	public void update(){
+//		if(logged & ready){
+//			try {
+//				connection.setRequestMethod("PUT");
+//				
+//				osr = new OutputStreamWriter(connection.getOutputStream());
+//				osr.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
+//			    
+//			    /*Then create the xml file to send, with encoded file inside*/
+//				osr.write("<upshot>");
+//				osr.write("<first_name>toto l'abricot</first_name>");
+//				osr.write("</upshot>");
+//				osr.flush();
+//				osr.close();
+//	
+//				/*You have to read the response of the host to make the changes happen*/
+//				isr = new InputStreamReader(connection.getInputStream());
+//				int c ;
+//				
+//				c = isr.read();
+//				while(c!=-1){
+//					c = isr.read();
+//				}
+//				isr.close();
+//				
+//			} catch (IOException e) {
+//			} 
+//			finally{
+//				connection.disconnect();
+//			}
+//		}
+//	}
 }

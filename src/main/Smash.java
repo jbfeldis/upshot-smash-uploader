@@ -323,7 +323,7 @@ public class Smash extends JFrame implements ActionListener{
 	/**
 	 * Save login information in serialized file
 	 */
-	public void save(){
+	public void save(){// TODO encrypt serialized object (JCE)
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
 
