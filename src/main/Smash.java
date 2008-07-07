@@ -10,9 +10,10 @@ package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Label;
+import java.awt.Insets;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
@@ -28,6 +29,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
@@ -38,6 +40,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 
 import table.DataModel;
@@ -76,7 +79,13 @@ public class Smash extends JFrame implements ActionListener{
 		super("UpShot SMASH");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
-		
+        this.getContentPane().setBackground(Color.DARK_GRAY);
+        this.getContentPane().setForeground(Color.WHITE);
+        
+        /* 
+         * STEP 0: prepare folders and files needed
+         * for user's preferences
+         * */
 		home = System.getProperty("user.home");
 		folder = "/Smash/";
 		file = "smash.config";
@@ -92,27 +101,49 @@ public class Smash extends JFrame implements ActionListener{
 		 */
         
         pane = new JPanel();
+        pane.setOpaque(false);
         desk = new JDesktopPane();
+        desk.setOpaque(false);
         		model = new DataModel();
         	table = new JTable(model);
         scroll = new JScrollPane(table);
         
-        desk.setSize(300, 250);
+        desk.setSize(650, 300);
         desk.setRequestFocusEnabled(true);
         desk.requestFocus();
         
-        scroll.setPreferredSize(new Dimension(300,100));
+        scroll.setPreferredSize(new Dimension(300,150));
+        scroll.setOpaque(false);
+        scroll.getViewport().setBackground(Color.DARK_GRAY);
+        scroll.getViewport().setForeground(Color.WHITE);
+        scroll.getViewport().setOpaque(false);
+        scroll.setEnabled(false);
 
-		table.setAutoCreateRowSorter(false);
-		table.setCellSelectionEnabled(false);
+		table.setAutoCreateRowSorter(false);//no sorting
 		table.setColumnSelectionAllowed(false);
 		table.setRowSelectionAllowed(false);
-		table.setFillsViewportHeight(true);
 		table.setAutoscrolls(true);
 		table.setDoubleBuffered(true);
-		table.setBackground(Color.WHITE);
-		table.setGridColor(Color.WHITE);
-		table.setEnabled(true);
+		table.setShowVerticalLines(false);
+		table.setShowHorizontalLines(false);
+		table.setOpaque(false);
+		table.setShowGrid(false);
+		table.setBackground(Color.DARK_GRAY);
+		table.setForeground(Color.WHITE);
+		table.setSelectionBackground(Color.DARK_GRAY);
+		table.setSelectionForeground(Color.WHITE);
+		Font font = new Font("Verdana",Font.BOLD,12);
+		table.setFont(font);
+		
+		JTableHeader jth = table.getTableHeader();
+		jth.setBackground(Color.DARK_GRAY);
+		jth.setForeground(Color.WHITE);
+		font = new Font("Verdana",Font.BOLD,10);
+		jth.setFont(font);
+		jth.setOpaque(false);
+		jth.setResizingAllowed(false);
+		jth.enableInputMethods(false);
+		jth.setReorderingAllowed(false);
 		
 		/*Column Delete*/
 		TableColumn column = table.getColumnModel().getColumn(0);
@@ -152,12 +183,16 @@ public class Smash extends JFrame implements ActionListener{
         logger = new JButton(Smash.getIcon("user.png"));
         	logger.setActionCommand("login");
         	logger.addActionListener(this);
+        	logger.setBorderPainted(false);
         helper = new JButton(Smash.getIcon("help.png"));
         	helper.setActionCommand("help");
         	helper.addActionListener(this);
+        	helper.setBorderPainted(false);
         sender = new JButton("SEND");
         	sender.addActionListener(this);
         	sender.setEnabled(false);
+        	sender.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        	sender.setForeground(Color.WHITE);
         
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
@@ -184,6 +219,8 @@ public class Smash extends JFrame implements ActionListener{
         
         gbc.gridx=2;
         gbc.fill=GridBagConstraints.HORIZONTAL;
+        gbc.ipady=6;
+        gbc.insets=new Insets(2,0,2,2);
         gbl.setConstraints(sender, gbc);
         
         pane.setLayout(gbl);
@@ -194,7 +231,7 @@ public class Smash extends JFrame implements ActionListener{
         pane.add(sender);
 
         this.add(pane);
-        pack();
+        this.pack();
         this.setLocationRelativeTo(null);
         
         /*
@@ -261,22 +298,22 @@ public class Smash extends JFrame implements ActionListener{
 		File fconfig = new File(home+folder+file);
 		if(fconfig.exists())
 			load();
-		else
+		else{
 			log = new Login(this, uc);
+			log.getContentPane().setBackground(Color.DARK_GRAY);
+		}
 		
 		if(log.getAnswer()>0){
 			sender.setEnabled(true);
 			save();
 		}
-		
-		desk.add(new Label("READY !"));
 	}
 
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
             	Smash up = new Smash();
-            	up.validate();
+            	up.repaint();
             }
         });
 	}
@@ -308,6 +345,7 @@ public class Smash extends JFrame implements ActionListener{
 		else if(s.equals("login")){
 			
 			sender.setEnabled(false);
+			log.setBackground(Color.DARK_GRAY);
 			log.setVisible(true);
 			
 			if(log.getAnswer()>0){
@@ -316,7 +354,7 @@ public class Smash extends JFrame implements ActionListener{
 			}
 		}
 		else if(s.equals("help")){
-			JOptionPane.showMessageDialog(this, "about text", "About", JOptionPane.INFORMATION_MESSAGE, null);
+			JOptionPane.showMessageDialog(this, "about text\nwill be dark backgrounf with real component", "About", JOptionPane.INFORMATION_MESSAGE, null);
 		}
 	}
 	
