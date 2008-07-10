@@ -70,6 +70,7 @@ public class ImageEditor extends JDialog implements ActionListener {
 		
 		panel = new JPanel();
 			panel.setPreferredSize(new Dimension(scale,scale));
+			panel.setDoubleBuffered(true);
 		name = new JLabel(imf.getFile().getAbsolutePath());
 		size = new JLabel(imf.getFile().length()/1024+"Ko");
 		titlelab = new JLabel("Title :");

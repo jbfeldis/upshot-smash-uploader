@@ -8,12 +8,10 @@
  */
 package table;
 
-import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JButton;
 import javax.swing.JTable;
-import javax.swing.UIManager;
 import javax.swing.table.TableCellRenderer;
 
 import main.Smash;
@@ -30,22 +28,16 @@ public class DeleteCellRender extends JButton implements TableCellRenderer{
 	private static final long serialVersionUID = 1L;
 	
 	public DeleteCellRender(){
-		this.setOpaque(false);
 	    this.setIcon(Smash.getIcon("cross.png"));
 		this.setBorderPainted(false);
-		this.setBackground(Color.DARK_GRAY);
+		this.setOpaque(false);
+		this.setFocusable(false);
 	}
 	
 	public Component getTableCellRendererComponent(JTable table, Object value,
 													boolean selected, boolean focused, 
 													int row, int column) {
-	    if (selected) {
-	        setForeground(table.getSelectionForeground());
-	        setBackground(table.getSelectionBackground());
-	      } else{
-	        setForeground(table.getForeground());
-	        setBackground(UIManager.getColor("Button.background"));
-	      }
+		this.setBackground(table.getBackground());
 		return this;
 	}
 }

@@ -42,13 +42,9 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 	
 	public Component getTableCellEditorComponent(JTable table, Object value,
               										boolean isSelected, int row, int column) {
-		if (isSelected) {
-			btn.setForeground(table.getSelectionForeground());
-			btn.setBackground(table.getSelectionBackground());
-		} else{
-			btn.setForeground(table.getForeground());
-			btn.setBackground(table.getBackground());
-		}
+		btn.setBackground(table.getBackground());
+		btn.setBorderPainted(false);
+		btn.setFocusable(false);
 		this.row=row;
 		return btn;
 	}
@@ -66,7 +62,7 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 	}
 
 	public void actionPerformed(ActionEvent ae) {
-		ImageEditor ie = new ImageEditor(model.getImageFile(row));
+		ImageEditor ie = new ImageEditor(model.getImageFile(row));// TODO progress bar for opening the image file
 		if(ie.getTitle()!=null && !ie.getTitle().isEmpty())
 			model.getImageFile(row).setTitle(ie.getTitle());
 		this.fireEditingStopped();

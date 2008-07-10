@@ -18,7 +18,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JTable;
 
 /**
- * cell editor to implements button functionnality to a cell of the table in order delete the associated row
+ * cell editor to implements button functionnality to a cell of the table 
+ * in order delete the associated row
  * 
  * @author Gregory Durelle
  *
@@ -39,13 +40,9 @@ public class DeleteCellEditor extends DefaultCellEditor implements ActionListene
 	
 	public Component getTableCellEditorComponent(JTable table, Object value,
               										boolean isSelected, int row, int column) {
-		if (isSelected) {
-			btn.setForeground(table.getSelectionForeground());
-			btn.setBackground(table.getSelectionBackground());
-		} else{
-			btn.setForeground(table.getForeground());
-			btn.setBackground(table.getBackground());
-		}
+		btn.setBackground(table.getBackground());
+		btn.setBorderPainted(false);
+		btn.setFocusable(false);
 		this.row=row;
 		return btn;
 	}

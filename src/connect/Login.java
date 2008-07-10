@@ -67,8 +67,10 @@ public class Login extends JDialog implements ActionListener, Serializable {
 			passwdbox.addActionListener(this);
 		ok = new JButton("OK");
 			ok.addActionListener(this);
+			ok.setOpaque(false);
 		cancel = new JButton("Cancel");
 			cancel.addActionListener(this);
+			cancel.setOpaque(false);
 		
 		loginlab = new JLabel("E-mail :");
 			loginlab.setLabelFor(loginbox);
@@ -171,7 +173,10 @@ public class Login extends JDialog implements ActionListener, Serializable {
 					message.setForeground(Color.RED);
 					message.setText("Wrong login or password");
 					this.pack();
-				} else this.dispose();
+				} else {
+					message.setText("");
+					this.dispose();
+				}
 			}
 		}
 		else if (s.equals("Cancel")){
