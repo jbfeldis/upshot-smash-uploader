@@ -15,8 +15,11 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Vector;
 
 import javax.swing.JOptionPane;
+
+import table.DataModel;
 
 import main.ImageFile;
 import main.Smash;
@@ -26,7 +29,7 @@ import main.Smash;
  * from our users to our distant host.
  * @author Gregory Durelle
  */
-public class UpConnection {
+public class UpConnection implements Runnable{
 
 	private URL url;
 	private HttpURLConnection connection = null;
@@ -34,6 +37,9 @@ public class UpConnection {
     private InputStreamReader isr=null;
     private OutputStreamWriter osr=null;
     private boolean logged, ready;
+    private int id;
+    private DataModel model;
+    private Vector<ImageFile> list;
 	
     public UpConnection(){
     	logged=false;
@@ -49,7 +55,69 @@ public class UpConnection {
 		userPass = login+":"+passwd;
 		encoding = new sun.misc.BASE64Encoder().encode(userPass.getBytes());
 		logged=true;
+		setup("users/get_id.xml");
     }
+    
+	/**
+	 * If user's login and token information are given.
+	 * @return true if user's informations have already been given, false otherwise
+	 * @see setUser(String login, String passwd)
+	 */
+	public boolean isLogged() {
+		return logged;
+	}
+
+	/**
+	 * If the connection is opened with the previously given parameters
+	 * @return true if connection parameters have already been given through the setup(String path) method
+	 * @see setup(String path)
+	 */
+	public boolean isReady() {
+		return ready;
+	}
+	
+	/**
+	 * This give the references to the model
+	 * @param model The DataModel object used by the JTable to list droped images
+	 */
+	public void setModel(DataModel model){
+		this.model=model;
+		list=model.getImages();
+	}
+	
+	/**
+	 * Simple get request to retrieve informations from
+	 * setted up host
+	 * @return A code value for what happened : <br />
+	 *  0 : getUser() and/or setup() not yet called<br />
+	 *  c : ok<br />
+	 * -1 : login failed<br />
+	 */
+	public int getId(){
+		if(logged & ready){
+			try {
+				connection.setRequestMethod("GET");
+				isr = new InputStreamReader(connection.getInputStream());
+				int c = 0;
+	
+				c = isr.read();
+				String s = new String();
+				while(c!=-1){
+					s += (char)c;
+					c = isr.read();
+				}
+				isr.close();
+				id=Integer.parseInt(s);
+				return Integer.parseInt(s);
+			} catch (IOException e) {
+				return -1;
+			} 
+			finally{
+				connection.disconnect();
+			}
+		}
+		return 0;
+	}
 	
 	/**
 	 * Setup connection with needed headers and user authentication properties
@@ -57,7 +125,7 @@ public class UpConnection {
 	 * XML datas
 	 * @param path The route used to access to wanted resource
 	 */
-	public void setup(String path){
+	private void setup(String path){
 		try {
 			url = new URL("http://localhost:3000/en/"+path);
 			connection=(HttpURLConnection)url.openConnection();
@@ -84,7 +152,7 @@ public class UpConnection {
 	 * @param f The file that will be sent
 	 * 
 	 */
-	public String sendData(ImageFile imf){
+	private String sendData(ImageFile imf){
 		String answer="";
 		if(logged & ready){
 			try {
@@ -131,61 +199,35 @@ public class UpConnection {
 		}
 		return answer;
 	}
-	
+
 	/**
-	 * Simple get request to retrieve informations from
-	 * setted up host
-	 * @return A code value for what happened : <br />
-	 *  0 : getUser() and/or setup() not yet called<br />
-	 *  c : ok<br />
-	 * -1 : login failed<br />
+	 * Run the thread for UpConnection, this permit to see the list of images
+	 * being checked after each send finished
+	 * 
 	 */
-	public int getId(){
-		if(logged & ready){
-			try {
-				connection.setRequestMethod("GET");
-				isr = new InputStreamReader(connection.getInputStream());
-				int c = 0;
-	
-				c = isr.read();
-				String s = new String();
-				while(c!=-1){
-					s += (char)c;
-					c = isr.read();
-				}
-				isr.close();
-				return Integer.parseInt(s);
-			} catch (IOException e) {
-				return -1;
-			} 
-			finally{
-				connection.disconnect();
+	public void run() {
+
+		String answer="";
+		
+		for(ImageFile imf : list){
+			if(!imf.isSent()){
+				setup("users/"+id+"/upshots.xml");
+				answer = sendData(imf);
 			}
+			
+			if(!answer.isEmpty())
+				imf.setSent(true);
+			
+			model.fireTableDataChanged();
 		}
-		return 0;
 	}
 
 	/**
-	 * If user's login and token information are given.
-	 * @return true if user's informations have already been given, false otherwise
-	 * @see setUser(String login, String passwd)
+	 * EXAMPLE METHOD
+	 * NOT USED IN THE SMASH PROJECT
+	 * Update the user's profile
+	 * changing its first_name to the string given between the tags <first_name>
 	 */
-	public boolean isLogged() {
-		return logged;
-	}
-
-	/**
-	 * If the connection is opened with the previously given parameters
-	 * @return true if connection parameters have already been given through the setup(String path) method
-	 * @see setup(String path)
-	 */
-	public boolean isReady() {
-		return ready;
-	}
-	
-//	/**
-//	 * Update the user's profile
-//	 */
 //	public void update(){
 //		if(logged & ready){
 //			try {
@@ -195,9 +237,9 @@ public class UpConnection {
 //				osr.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
 //			    
 //			    /*Then create the xml file to send, with encoded file inside*/
-//				osr.write("<upshot>");
+//				osr.write("<user>");
 //				osr.write("<first_name>toto l'abricot</first_name>");
-//				osr.write("</upshot>");
+//				osr.write("</user>");
 //				osr.flush();
 //				osr.close();
 //	

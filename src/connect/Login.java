@@ -167,7 +167,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 			}
 			else{
 				uc.setUser(login, passwd);
-				uc.setup("users/get_id.xml");
+
 				if((answer=uc.getId())<=0){
 					init();
 					message.setForeground(Color.RED);
@@ -192,7 +192,6 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	public void setConnectionConfig(UpConnection uc){
 		this.uc=uc;
 		uc.setUser(login, passwd);
-		uc.setup("users/get_id.xml");
 	}
 	
 	/**

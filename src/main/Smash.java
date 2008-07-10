@@ -29,7 +29,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.List;
-import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -387,34 +386,23 @@ public class Smash extends JFrame implements ActionListener{
 			if(model.getRowCount()==0)
 				JOptionPane.showMessageDialog(this, "Nothing to send !\nAdd image files and try again.", "Send what ?", JOptionPane.WARNING_MESSAGE);
 			else{
+				sender.setEnabled(false);
+				// TODO Display waiting loader
 				
 				/* 
 				 * DO THE HTTP JOB
 				 * send each file with its informations to create drafts upshots
+				 * and refresh the list at the same time...
 				 * */
-				
-				String answer="";
-				Vector<ImageFile> imClone = (Vector<ImageFile>)model.getImages().clone();
-				
-				for(ImageFile imf : imClone){
-					uc.setup("users/"+log.getAnswer()+"/upshots.xml");
-					
-					if(!imf.isSent())
-						answer=uc.sendData(imf);
+				uc.setModel(model);
+				Thread t = new Thread(uc);
+				t.start();
 
-					if(!answer.isEmpty())
-						imf.setSent(true);
-					
-					model.fireTableDataChanged();
-				}
-				
 				sender.setEnabled(false);
 				
-				if(model.getImages().isEmpty())
-					sender.setEnabled(false);
-				else for(ImageFile imf : model.getImages())
-						if(!imf.isSent())
-							sender.setEnabled(true);
+				for(ImageFile imf : model.getImages())
+					if(!imf.isSent())
+						sender.setEnabled(true);
 			}
 		}
 		else if(s.equals("login")){
@@ -433,7 +421,7 @@ public class Smash extends JFrame implements ActionListener{
 	/**
 	 * Save login information in serialized file
 	 */
-	public void save(){// TODO encrypt serialized object (JCE)
+	public void save(){
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
 
