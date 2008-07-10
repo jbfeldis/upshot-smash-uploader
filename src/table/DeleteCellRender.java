@@ -38,6 +38,11 @@ public class DeleteCellRender extends JButton implements TableCellRenderer{
 													boolean selected, boolean focused, 
 													int row, int column) {
 		this.setBackground(table.getBackground());
+		
+		if(((DataModel)table.getModel()).getImageFile(row).isSent())
+			this.setIcon(Smash.getIcon("tick.png"));
+		else
+			this.setIcon(Smash.getIcon("cross.png"));
 		return this;
 	}
 }

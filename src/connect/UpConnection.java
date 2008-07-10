@@ -16,7 +16,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import javax.swing.JOptionPane;
+
 import main.ImageFile;
+import main.Smash;
 
 /**
  * HTTP conneciton module, to permit authentication and thus sending of datas 
@@ -81,7 +84,8 @@ public class UpConnection {
 	 * @param f The file that will be sent
 	 * 
 	 */
-	public void sendData(ImageFile imf){
+	public String sendData(ImageFile imf){
+		String answer="";
 		if(logged & ready){
 			try {
 				connection.setRequestMethod("POST");
@@ -113,17 +117,19 @@ public class UpConnection {
 				
 				c = isr.read();
 				while(c!=-1){
+					answer+=(char)c;
 					c = isr.read();
 				}
 				isr.close();
 				
 			} catch (IOException e) {
-	//			e.printStackTrace();
+				JOptionPane.showMessageDialog(Smash.getFrames()[0], "UpCnnection.sendData() : error", "Error", JOptionPane.ERROR_MESSAGE);
 			} 
 			finally{
 				connection.disconnect();
 			}
 		}
+		return answer;
 	}
 	
 	/**

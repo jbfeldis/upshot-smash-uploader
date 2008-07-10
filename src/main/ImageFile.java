@@ -19,10 +19,12 @@ import java.io.File;
 public class ImageFile {
 	private File file;
 	private String title;
-	
+	private boolean sent;
+
 	public ImageFile(File f){
 		file=f;
 		title=f.getName().substring(0, f.getName().lastIndexOf("."));
+		sent=false;
 	}
 
 	public String getTitle() {
@@ -35,6 +37,14 @@ public class ImageFile {
 
 	public File getFile() {
 		return file;
+	}
+	
+	public boolean isSent() {
+		return sent;
+	}
+
+	public void setSent(boolean sent) {
+		this.sent = sent;
 	}
 	
 }

@@ -44,6 +44,10 @@ public class DeleteCellEditor extends DefaultCellEditor implements ActionListene
 		btn.setBorderPainted(false);
 		btn.setFocusable(false);
 		this.row=row;
+		
+		if(((DataModel)table.getModel()).getImageFile(row).isSent())
+			btn.removeActionListener(this);
+		
 		return btn;
 	}
 	

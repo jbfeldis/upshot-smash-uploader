@@ -86,10 +86,6 @@ public class Smash extends JFrame implements ActionListener{
         this.getContentPane().setBackground(background);
         this.getContentPane().setForeground(foreground);
         this.setIconImage(getIcon("upshot.png").getImage());
-        /*
-         * TODO set undecorated to true, but
-         * first move the frame with simple drag in it.
-         */
         
         /* 
          * STEP 0: prepare folders and files needed
@@ -397,24 +393,32 @@ public class Smash extends JFrame implements ActionListener{
 				 * send each file with its informations to create drafts upshots
 				 * */
 				
-				
+				String answer="";
 				Vector<ImageFile> imClone = (Vector<ImageFile>)model.getImages().clone();
+				
 				for(ImageFile imf : imClone){
 					uc.setup("users/"+log.getAnswer()+"/upshots.xml");
-					uc.sendData(imf);
-					// TODO progressbar 
-					/*
-					 * TODO not deleting, prefer finding a nice way to tell the user that it as been succesfully sended
-					 * 
-					 */
-					model.remove(imf);
+					
+					if(!imf.isSent())
+						answer=uc.sendData(imf);
+
+					if(!answer.isEmpty())
+						imf.setSent(true);
+					
+					model.fireTableDataChanged();
 				}
+				
 				sender.setEnabled(false);
+				
+				if(model.getImages().isEmpty())
+					sender.setEnabled(false);
+				else for(ImageFile imf : model.getImages())
+						if(!imf.isSent())
+							sender.setEnabled(true);
 			}
 		}
 		else if(s.equals("login")){
 			
-			sender.setEnabled(false);
 			log.setVisible(true);
 			
 			if(log.getAnswer()>0){
@@ -422,7 +426,7 @@ public class Smash extends JFrame implements ActionListener{
 			}
 		}
 		else if(s.equals("help")){
-			JOptionPane.showMessageDialog(this, "about text\nwill be dark backgrounf with real component", "About", JOptionPane.INFORMATION_MESSAGE, getIcon("logo.png"));
+			JOptionPane.showMessageDialog(this, "about text\nwill be black backgroung with real component", "About", JOptionPane.INFORMATION_MESSAGE, getIcon("logo.png"));
 		}
 	}
 	
