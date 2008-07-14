@@ -19,12 +19,12 @@ import java.io.File;
 public class ImageFile {
 	private File file;
 	private String title;
-	private boolean sent;
+	private int status;//0:ready, 1:sending, 2:sent
 
 	public ImageFile(File f){
 		file=f;
 		title=f.getName().substring(0, f.getName().lastIndexOf("."));
-		sent=false;
+		status=0;
 	}
 
 	public String getTitle() {
@@ -39,12 +39,20 @@ public class ImageFile {
 		return file;
 	}
 	
+	public boolean isSending(){
+		return status==1;
+	}
+	
 	public boolean isSent() {
-		return sent;
+		return status==2;
+	}
+	
+	public void setSending(){
+		status = 1;
 	}
 
-	public void setSent(boolean sent) {
-		this.sent = sent;
+	public void setSent() {
+		status = 2;
 	}
 	
 }

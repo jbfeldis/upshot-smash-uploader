@@ -211,14 +211,16 @@ public class UpConnection implements Runnable{
 		
 		for(ImageFile imf : list){
 			if(!imf.isSent()){
+				imf.setSending();
+				model.fireTableDataChanged();
+				
 				setup("users/"+id+"/upshots.xml");
 				answer = sendData(imf);
+				
+				if(!answer.isEmpty())
+					imf.setSent();
+				model.fireTableDataChanged();
 			}
-			
-			if(!answer.isEmpty())
-				imf.setSent(true);
-			
-			model.fireTableDataChanged();
 		}
 	}
 

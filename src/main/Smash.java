@@ -397,7 +397,7 @@ public class Smash extends JFrame implements ActionListener{
 				uc.setModel(model);
 				Thread t = new Thread(uc);
 				t.start();
-
+				this.repaint();
 				sender.setEnabled(false);
 				
 				for(ImageFile imf : model.getImages())

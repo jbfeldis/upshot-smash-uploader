@@ -8,6 +8,7 @@
  */
 package table;
 
+import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JButton;
@@ -32,7 +33,7 @@ public class EditCellRender extends JButton implements TableCellRenderer{
 	    this.setText("Edit");
 		this.setBorderPainted(false);
 		this.setOpaque(false);
-		this.setFocusable(false);
+		this.setForeground(Color.WHITE);
 	}
 	
 	public Component getTableCellRendererComponent(JTable table, Object value,
