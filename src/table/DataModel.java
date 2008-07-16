@@ -1,8 +1,23 @@
 /**
- * Studio Melipone
- * June 2008
+ *  Copyright 2008 Studio Melipone
  * 
- * plugin for UpShot
+ *  This file is part of "Smash Uploader".
+ *  
+ *  Smash Uploader is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Foobar is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ *   
+ * 
+ * plugin for UpShot (c)
  * http://www.upshotit.com
  * 
  */
@@ -35,26 +50,40 @@ public class DataModel extends AbstractTableModel{
 		imagesList=new Vector<ImageFile>();
 	}
 	
+	/**
+	 * This add the given ImageFile object to the Vector called imagesList
+	 * @param imf the ImageFile object previously created
+	 * @see ImageFile 
+	 */
 	public void add(ImageFile imf){
 		if(getMIMEType(imf.getFile()).substring(0, 5).equals("image"))
 			imagesList.add(imf);
 		this.fireTableDataChanged();
 	}
 	
+	/**
+	 * Remove the ImageFile at the given index in the imagesList Vector
+	 * @param index the place of the ImageFile in the Vector imagesList
+	 */
 	public void remove(int index){
 		imagesList.remove(index);
 		this.fireTableDataChanged();
 	}
 	
-	public void remove(ImageFile imf){
-		imagesList.remove(imf);
-		this.fireTableDataChanged();
-	}
-	
+	/**
+	 * retrieve the Vector imagesList
+	 * @return Vector<ImageFile> 
+	 */
 	public Vector<ImageFile> getImages(){
 		return imagesList;
 	}
 	
+	/**
+	 * Retrieve the ImageFile at the given row
+	 * @param row the place of the desired ImageFile in imageList
+	 * @return the ImageFile object
+	 * @see ImageFile
+	 */
 	public ImageFile getImageFile(int row){
 		return imagesList.elementAt(row);
 	}
@@ -94,7 +123,8 @@ public class DataModel extends AbstractTableModel{
 	}
 
 	/**
-	 * 
+	 * This method retrieve the format of the image (jpg, png, etc) 
+	 * it will be displayed as "image/png" for png files, as for all formats (image/format)
 	 * @param file
 	 * @return The MIME-Type
 	 */

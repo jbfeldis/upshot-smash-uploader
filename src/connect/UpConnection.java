@@ -1,8 +1,23 @@
 /**
- * Studio Melipone
- * June 2008
+ *  Copyright 2008 Studio Melipone
  * 
- * plugin for UpShot
+ *  This file is part of "Smash Uploader".
+ *  
+ *  Smash Uploader is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Foobar is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ *   
+ * 
+ * plugin for UpShot (c)
  * http://www.upshotit.com
  * 
  */
@@ -213,53 +228,12 @@ public class UpConnection implements Runnable{
 			if(!imf.isSent()){
 				imf.setSending();
 				model.fireTableDataChanged();
-				
 				setup("users/"+id+"/upshots.xml");
 				answer = sendData(imf);
-				
 				if(!answer.isEmpty())
 					imf.setSent();
 				model.fireTableDataChanged();
 			}
 		}
 	}
-
-	/**
-	 * EXAMPLE METHOD
-	 * NOT USED IN THE SMASH PROJECT
-	 * Update the user's profile
-	 * changing its first_name to the string given between the tags <first_name>
-	 */
-//	public void update(){
-//		if(logged & ready){
-//			try {
-//				connection.setRequestMethod("PUT");
-//				
-//				osr = new OutputStreamWriter(connection.getOutputStream());
-//				osr.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
-//			    
-//			    /*Then create the xml file to send, with encoded file inside*/
-//				osr.write("<user>");
-//				osr.write("<first_name>toto l'abricot</first_name>");
-//				osr.write("</user>");
-//				osr.flush();
-//				osr.close();
-//	
-//				/*You have to read the response of the host to make the changes happen*/
-//				isr = new InputStreamReader(connection.getInputStream());
-//				int c ;
-//				
-//				c = isr.read();
-//				while(c!=-1){
-//					c = isr.read();
-//				}
-//				isr.close();
-//				
-//			} catch (IOException e) {
-//			} 
-//			finally{
-//				connection.disconnect();
-//			}
-//		}
-//	}
 }

@@ -1,8 +1,23 @@
 /**
- * Studio Melipone
- * June 2008
+ *  Copyright 2008 Studio Melipone
  * 
- * plugin for UpShot
+ *  This file is part of "Smash Uploader".
+ *  
+ *  Smash Uploader is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Foobar is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ *   
+ * 
+ * plugin for UpShot (c)
  * http://www.upshotit.com
  * 
  */
@@ -18,6 +33,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JTable;
 
 import main.ImageEditor;
+import main.Smash;
 
 /**
  * cell editor to implements button functionnality to a cell of the table
@@ -43,8 +59,11 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 	public Component getTableCellEditorComponent(JTable table, Object value,
               										boolean isSelected, int row, int column) {
 		btn.setBackground(table.getBackground());
+		btn.setForeground(table.getForeground());
 		btn.setBorderPainted(false);
 		btn.setFocusable(false);
+		btn.setIcon(Smash.getIcon("edit.png"));
+		btn.setText("Edit");
 		this.row=row;
 		return btn;
 	}
@@ -62,7 +81,9 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 	}
 
 	public void actionPerformed(ActionEvent ae) {
-		ImageEditor ie = new ImageEditor(model.getImageFile(row));// TODO progress bar for opening the image file
+		
+		ImageEditor ie = new ImageEditor(model.getImageFile(row));
+		
 		if(ie.getTitle()!=null && !ie.getTitle().isEmpty())
 			model.getImageFile(row).setTitle(ie.getTitle());
 		this.fireEditingStopped();

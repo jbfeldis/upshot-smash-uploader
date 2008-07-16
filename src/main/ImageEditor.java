@@ -1,8 +1,23 @@
 /**
- * Studio Melipone
- * June 2008
+ *  Copyright 2008 Studio Melipone
  * 
- * plugin for UpShot
+ *  This file is part of "Smash Uploader".
+ *  
+ *  Smash Uploader is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Foobar is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ *   
+ * 
+ * plugin for UpShot (c)
  * http://www.upshotit.com
  * 
  */
@@ -53,22 +68,19 @@ public class ImageEditor extends JDialog implements ActionListener {
 		try {
 			BufferedImage bi = ImageIO.read(imf.getFile());
 			image = bi.getScaledInstance(-1, -1, Image.SCALE_SMOOTH);//only to get an Image instance
-			
 			w = image.getWidth(null);
 			h = image.getHeight(null);
-			
 			if(w>h){
 				if(w>=scale){
 					image=bi.getScaledInstance(scale, -1, Image.SCALE_SMOOTH);
 				}
 			}
 			else image=bi.getScaledInstance(-1, scale, Image.SCALE_SMOOTH);
-			
 		} catch (IOException ioe) {
 			
 		}
 		
-		panel = new JPanel();
+		panel = new JPanel(true);
 			panel.setPreferredSize(new Dimension(scale,scale));
 			panel.setDoubleBuffered(true);
 		name = new JLabel(imf.getFile().getAbsolutePath());
@@ -134,17 +146,13 @@ public class ImageEditor extends JDialog implements ActionListener {
 		this.pack();
 		this.setLocationRelativeTo(Smash.getFrames()[0]);
 		this.setVisible(true);
+
 	}
 	
-	/**
-	 * Will draw a thumbnail of the image
-	 */
 	public void paint(Graphics g){
 		super.paintComponents(g);
-		
 		w = image.getWidth(null);
 		h = image.getHeight(null);
-		
 		g.drawImage(image, (panel.getWidth()-w)/2+5, (panel.getHeight()-h)/2+27,image.getWidth(null), image.getHeight(null), null);
 	}
 
@@ -154,7 +162,10 @@ public class ImageEditor extends JDialog implements ActionListener {
 	}
 	
 	/**
-	 * used by the editcelleditor to apply changes on the model
+	 * Used by the EditCellEditor to apply changes on the model
+	 * @return the new title of the ImageFile object
+	 * @see EditCellEditor
+	 * @see ImageFile
 	 */
 	public String getTitle(){
 		return new_title;

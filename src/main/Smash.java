@@ -1,8 +1,23 @@
 /**
- * Studio Melipone
- * June 2008
+ *  Copyright 2008 Studio Melipone
  * 
- * plugin for UpShot
+ *  This file is part of "Smash Uploader".
+ *  
+ *  Smash Uploader is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published by
+ *   the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.
+ *
+ *   Foobar is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+ *   
+ * 
+ * plugin for UpShot (c)
  * http://www.upshotit.com
  * 
  */
@@ -55,9 +70,9 @@ import connect.UpConnection;
 
 
 /**
- * UpShot plugin TransferHandler application
- * using a JDesktopPane to transfert from desktop to application
- * then listing it in a JTable, and send it it to distant host through secure Sockets.
+ * UpShot plugin application
+ * Smash Uploader uses a JDesktopPane to transfert from desktop to application
+ * then list it in a JTable, and send it to a distant host through http requests.
  * @author Gregory Durelle
  *
  */
@@ -75,11 +90,12 @@ public class Smash extends JFrame implements ActionListener{
 	private UpConnection uc;
 	private Login log;
 	private String home, folder, file;
-	private final Color background = Color.BLACK;
+	private About about;
+	private final Color background = Color.decode("#656565");
 	private final Color foreground = Color.WHITE;
 
 	public Smash(){
-		super("UpShot SMASH");
+		super("Smash Uploader");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(false);
         this.getContentPane().setBackground(background);
@@ -90,7 +106,7 @@ public class Smash extends JFrame implements ActionListener{
          * STEP 0: prepare folders and files needed
          * for user's preferences
          * */
-		home = System.getProperty("user.home");
+		home = System.getProperty("user.home");//users'main folder, MyDocuments or /home...
 		folder = "/Smash/";
 		file = "smash.config";
 		File f = new File(home+folder);//create the folder at the right place
@@ -104,24 +120,14 @@ public class Smash extends JFrame implements ActionListener{
 		 * the list of dropped images, 
 		 */
         
-        pane = new JPanel(){
-
-			private static final long serialVersionUID = 1L;
-//        	public void paint(Graphics g){
-//				Graphics2D g2d = (Graphics2D)g;
-//				g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.7f));
-//				super.paintComponents(g2d);	
-//				g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.2f));
-//				Image back = getIcon("melipone.png").getImage();
-//				g2d.drawImage(back, 0, g2d.getClipBounds().y, g2d.getClipBounds().width, g2d.getClipBounds().height, null);
-//        	}
-        };
+        pane = new JPanel();
         pane.setOpaque(false);
         desk = new JDesktopPane(){
 			private static final long serialVersionUID = 1L;
 
 			public void paint(Graphics g){
-				Image back = getIcon("d3.png").getImage();
+				super.paintComponents(g);
+				Image back = getIcon("dropzone.png").getImage();
 				g.drawImage(back, 0, g.getClipBounds().y, g.getClipBounds().width, g.getClipBounds().height, null);
         	}
         };
@@ -130,13 +136,16 @@ public class Smash extends JFrame implements ActionListener{
         	table = new JTable(model);
         scroll = new JScrollPane(table);
         
-        desk.setSize(650, 300);
-        desk.setPreferredSize(new Dimension(650,300));
+        Dimension dim = new Dimension(680,420);
+        desk.setSize(dim);
+        desk.setPreferredSize(dim);
         desk.setRequestFocusEnabled(true);
         desk.requestFocus();
         
-        scroll.setPreferredSize(new Dimension(650,150));
+        scroll.setPreferredSize(new Dimension(680,150));
         scroll.setBackground(background);
+        scroll.setForeground(foreground);
+        scroll.setOpaque(false);
         scroll.getViewport().setOpaque(false);
         scroll.setBorder(BorderFactory.createEmptyBorder());
 
@@ -154,22 +163,25 @@ public class Smash extends JFrame implements ActionListener{
 		table.setFont(font);
 		table.setTableHeader(null);
 		
-		/*The header of the table is quite independant
-		 * so we have to customize it singly
+		/* The header of the table is quite independant
+		 * so we have to customize it singly BUT as it was too ugly, 
+		 * we replaced it with the JPanel myHead defined further .
+		 * 
+		 * JTableHeader jth = table.getTableHeader();
+		 * jth.setBackground(background);
+		 * jth.setForeground(foreground);
+		 * font = new Font("Verdana",Font.BOLD,10);
+		 * jth.setFont(font);
+		 * jth.setOpaque(false);
+		 * jth.setResizingAllowed(false);
+		 * jth.enableInputMethods(false);
+		 * jth.setReorderingAllowed(false);
+		 * 
 		 * */
-//		JTableHeader jth = table.getTableHeader();
-//		jth.setBackground(background);
-//		jth.setForeground(foreground);
-//		font = new Font("Verdana",Font.BOLD,10);
-//		jth.setFont(font);
-//		jth.setOpaque(false);
-//		jth.setResizingAllowed(false);
-//		jth.enableInputMethods(false);
-//		jth.setReorderingAllowed(false);
 		
 		/*Column Delete*/
 		TableColumn column = table.getColumnModel().getColumn(0);
-		column.setPreferredWidth(5);
+		column.setPreferredWidth(10);
         DeleteCellRender delCellRender = new DeleteCellRender();
         DeleteCellEditor delCellEditor = new DeleteCellEditor(model);
 		column.setCellRenderer(delCellRender);
@@ -178,12 +190,12 @@ public class Smash extends JFrame implements ActionListener{
 		
 		/*Column Title*/
 		column = table.getColumnModel().getColumn(1);
-		column.setPreferredWidth(140);
+		column.setPreferredWidth(135);
 		column.setResizable(false);
 		
 		/*Column Format*/
 		column = table.getColumnModel().getColumn(2);
-		column.setPreferredWidth(80);
+		column.setPreferredWidth(75);
 		column.setResizable(false);
 		
 		/*Column Size*/
@@ -193,7 +205,7 @@ public class Smash extends JFrame implements ActionListener{
 		
 		/*Column Edit*/
 		column = table.getColumnModel().getColumn(4);
-		column.setPreferredWidth(5);
+		column.setPreferredWidth(10);
 		column.setResizable(false);
         EditCellRender editCellRender = new EditCellRender();
         EditCellEditor editCellEditor = new EditCellEditor(model);
@@ -339,9 +351,8 @@ public class Smash extends JFrame implements ActionListener{
             }
         };
         
-        this.setTransferHandler(handler);// FIXME choose if drop is possible everywhere or not
+//        this.setTransferHandler(handler);
         desk.setTransferHandler(handler);
-    	this.setVisible(true);
         
 		/*
 		 * STEP 3 : Logging in
@@ -365,16 +376,13 @@ public class Smash extends JFrame implements ActionListener{
 		if(log.getAnswer()>0){
 			save();
 		}
-		
-		/*Add some stuff in the deskpane*/
-		desk.add(new JLabel("Drop your images here"));
 	}
 
 	public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
             	Smash up = new Smash();
-            	up.repaint();
+            	up.setVisible(true);
             }
         });
 	}
@@ -387,7 +395,6 @@ public class Smash extends JFrame implements ActionListener{
 				JOptionPane.showMessageDialog(this, "Nothing to send !\nAdd image files and try again.", "Send what ?", JOptionPane.WARNING_MESSAGE);
 			else{
 				sender.setEnabled(false);
-				// TODO Display waiting loader
 				
 				/* 
 				 * DO THE HTTP JOB
@@ -398,11 +405,7 @@ public class Smash extends JFrame implements ActionListener{
 				Thread t = new Thread(uc);
 				t.start();
 				this.repaint();
-				sender.setEnabled(false);
-				
-				for(ImageFile imf : model.getImages())
-					if(!imf.isSent())
-						sender.setEnabled(true);
+
 			}
 		}
 		else if(s.equals("login")){
@@ -414,14 +417,19 @@ public class Smash extends JFrame implements ActionListener{
 			}
 		}
 		else if(s.equals("help")){
-			JOptionPane.showMessageDialog(this, "about text\nwill be black backgroung with real component", "About", JOptionPane.INFORMATION_MESSAGE, getIcon("logo.png"));
+			if(about==null)
+				about = new About(this);
+			else about.setVisible(true);
+			
+			
+//			JOptionPane.showMessageDialog(this, abtxt, "About SMASH", JOptionPane.INFORMATION_MESSAGE, getIcon("logo.png"));
 		}
 	}
 	
 	/**
 	 * Save login information in serialized file
 	 */
-	public void save(){
+	private void save(){
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
 
@@ -439,7 +447,7 @@ public class Smash extends JFrame implements ActionListener{
 	 * Load serialized file
 	 * and recreate login object thanks to it
 	 */
-	public void load(){
+	private void load(){
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
 		try{
