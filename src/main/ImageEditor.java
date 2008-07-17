@@ -38,6 +38,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -76,8 +77,8 @@ public class ImageEditor extends JDialog implements ActionListener {
 				}
 			}
 			else image=bi.getScaledInstance(-1, scale, Image.SCALE_SMOOTH);
-		} catch (IOException ioe) {
-			
+		} catch (IOException e) {
+			JOptionPane.showMessageDialog(Smash.getFrames()[0], "ImageEditor() IOException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 		
 		panel = new JPanel(true);
@@ -156,6 +157,7 @@ public class ImageEditor extends JDialog implements ActionListener {
 		g.drawImage(image, (panel.getWidth()-w)/2+5, (panel.getHeight()-h)/2+27,image.getWidth(null), image.getHeight(null), null);
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		new_title=title.getText();
 		this.dispose();

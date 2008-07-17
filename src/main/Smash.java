@@ -321,7 +321,7 @@ public class Smash extends JFrame implements ActionListener{
                 return true;
             }
 
-            @SuppressWarnings("unchecked")
+			@SuppressWarnings("unchecked")
 			public boolean importData(TransferHandler.TransferSupport support) {
                 if (!canImport(support)) {
                     return false;
@@ -331,27 +331,28 @@ public class Smash extends JFrame implements ActionListener{
                 
                 try {
                 	DataFlavor df = DataFlavor.javaFileListFlavor;
-                	List<File> list = (List<File>)t.getTransferData(df);//list are the items we have just dropped
+                	List<File> localList = (List<File>)t.getTransferData(df);//list of the items we have just dropped
                 	
-                    for (File f : list) {
+                    for (File f : localList) {
                     	ImageFile imf = new ImageFile(f);
                     	model.add(imf);
                     	table.repaint();
                     }
                     
-                    if (list.size()>0)
+                    if (localList.size()>0 && log.getAnswer()>0)
                     	sender.setEnabled(true);
                     
                 } catch (UnsupportedFlavorException e) {
+                	JOptionPane.showMessageDialog(Smash.getFrames()[0], "Smash.handler.importData() UnsupportedFlavorException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 } catch (IOException e) {
+                	JOptionPane.showMessageDialog(Smash.getFrames()[0], "Smash.handler.importData() IOException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                     return false;
                 }
                 return true;
             }
         };
         
-//        this.setTransferHandler(handler);
         desk.setTransferHandler(handler);
         
 		/*
@@ -375,7 +376,10 @@ public class Smash extends JFrame implements ActionListener{
 		
 		if(log.getAnswer()>0){
 			save();
+			if(model.getImages().size()>0)
+				sender.setEnabled(true);
 		}
+		else sender.setEnabled(false);
 	}
 
 	public static void main(String[] args) {
@@ -387,7 +391,7 @@ public class Smash extends JFrame implements ActionListener{
         });
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		String s = ae.getActionCommand();
 		if(s.equals("SEND")){
@@ -414,15 +418,15 @@ public class Smash extends JFrame implements ActionListener{
 			
 			if(log.getAnswer()>0){
 				save();
+				if(model.getImages().size()>0)
+					sender.setEnabled(true);
 			}
+			else sender.setEnabled(false);
 		}
 		else if(s.equals("help")){
 			if(about==null)
 				about = new About(this);
 			else about.setVisible(true);
-			
-			
-//			JOptionPane.showMessageDialog(this, abtxt, "About SMASH", JOptionPane.INFORMATION_MESSAGE, getIcon("logo.png"));
 		}
 	}
 	
@@ -439,7 +443,7 @@ public class Smash extends JFrame implements ActionListener{
 			out.writeObject(log);
 			out.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(Smash.getFrames()[0], "Smash.save() IOException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -456,11 +460,11 @@ public class Smash extends JFrame implements ActionListener{
 		    log = (Login)in.readObject();
 		    in.close();
 		    }
-		catch(IOException ex){
-		    ex.printStackTrace();
+		catch(IOException e){
+			JOptionPane.showMessageDialog(Smash.getFrames()[0], "Smash.load() IOException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
-		catch(ClassNotFoundException ex){
-		   ex.printStackTrace();
+		catch(ClassNotFoundException e){
+			JOptionPane.showMessageDialog(Smash.getFrames()[0], "Smash.load() ClassNotFoundException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	    log.setConnectionConfig(uc);
 	}

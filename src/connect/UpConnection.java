@@ -125,6 +125,7 @@ public class UpConnection implements Runnable{
 				id=Integer.parseInt(s);
 				return Integer.parseInt(s);
 			} catch (IOException e) {
+//				JOptionPane.showMessageDialog(Smash.getFrames()[0], "UpConnection.getId() IOException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				return -1;
 			} 
 			finally{
@@ -155,9 +156,9 @@ public class UpConnection implements Runnable{
 	        connection.setDoOutput(true);
 	        ready=true;
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(Smash.getFrames()[0], "UpConnection.setup() MalformedURLException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		} catch (IOException e) {
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(Smash.getFrames()[0], "UpConnection.setup() IOException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
 	
@@ -205,8 +206,8 @@ public class UpConnection implements Runnable{
 				}
 				isr.close();
 				
-			} catch (IOException e) {
-				JOptionPane.showMessageDialog(Smash.getFrames()[0], "UpCnnection.sendData() : error", "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (IOException ioe) {
+				JOptionPane.showMessageDialog(Smash.getFrames()[0], "UpConnection.sendData() : "+ioe.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 			} 
 			finally{
 				connection.disconnect();
@@ -220,6 +221,7 @@ public class UpConnection implements Runnable{
 	 * being checked after each send finished
 	 * 
 	 */
+	@Override
 	public void run() {
 
 		String answer="";

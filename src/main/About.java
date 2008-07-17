@@ -24,12 +24,19 @@
 package main;
 
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -37,10 +44,15 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
- * A really simple JDialog to display the About box of Smash Uploader
+ * A nice JDialog to display the About box of Smash Uploader
+ * resume the Smash Uploader goal
+ * remind licence informations
+ * give links to UpShot, StudioMelipone, and our blog
+ * give mail contact
  * @author Gregory Durelle
  *
  */
@@ -57,7 +69,7 @@ public class About extends JDialog implements ActionListener {
         this.getContentPane().setBackground(Color.decode("#656565"));
         this.getContentPane().setForeground(Color.WHITE);
 		this.setResizable(false);
-		this.setUndecorated(true);
+		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		
 		ImageIcon plainupshot = Smash.getIcon("upshot.png");
 		ImageIcon reallife = Smash.getIcon("reallife.png");
@@ -105,7 +117,7 @@ public class About extends JDialog implements ActionListener {
 		top.add(real);
 		
 		content = new JLabel();
-		content.setPreferredSize(new Dimension(this.getWidth(),this.getHeight()));
+		content.setPreferredSize(new Dimension(this.getWidth(),200));
 		content.setVerticalAlignment(JLabel.TOP);
 	
 		String txt = "<html><body><b><font size=6>Smash Uploader</font></b> is an <i>OpenSource</i> plugin for <b><font size=4>UpShot</font></b>, " +
@@ -113,7 +125,7 @@ public class About extends JDialog implements ActionListener {
 				 			 "<br>" +
 				 			 "The goal of this <i>multiplatform</i> application is to help you to <b><font size=5>drop</font></b> several <b>images</b> from " +
 				 			 "<u><font size=4>your desktop</font></u> into a list of images, in order to instantly <b><font size=5>send</font></b> them to <u><font size=4>your UpShot account</font></u>.<br>" +
-				 			 "<br><br><br>" +
+				 			 "<br><br>" +
 				 			 "<font size=3>" +
 				 			 	"Smash Uploader v.1.0<br>" +
 				 			 	"Copyright 2008 Studio Melipone<br>" +
@@ -126,15 +138,22 @@ public class About extends JDialog implements ActionListener {
 		ok = new JButton("ok");
 		ok.addActionListener(this);
 		
-		links = new JButton[3];
-		links[0] = new JButton("http://upshotit.com");
-		links[1] = new JButton("http://studiomelipone.com");
-		links[2] = new JButton("http://freshfromthehive.eu");
+		links = new JButton[4];// !!!! Remind the size to the number of elements ;)
+		links[0] = new JButton("<html><body><u>http://upshotit.com</u></body></html>");
+		links[1] = new JButton("<html><body><u>http://studiomelipone.com</u></body></html>");
+		links[2] = new JButton("<html><body><u>http://freshfromthehive.eu</u></body></html>");
+		links[3] = new JButton("contactez-nous", Smash.getIcon("email.png"));
+		
+		Font font = new Font("Verdana",Font.ITALIC, 11);
 		
 		for(JButton btn : links){
+			btn.addActionListener(this);
 			btn.setOpaque(false);
 			btn.setBorderPainted(false);
-			btn.addActionListener(this);
+			btn.setFocusable(false);
+			btn.setFont(font);
+			Cursor hand = new Cursor(Cursor.HAND_CURSOR);
+			btn.setCursor(hand);
 		}
 		
 		GridBagLayout gbl = new GridBagLayout();
@@ -148,20 +167,18 @@ public class About extends JDialog implements ActionListener {
 		gbl.setConstraints(top, gbc);
 		
 		gbc.gridy=1;
-		gbc.insets = new Insets(10, 5, 0, 5);
+		gbc.insets = new Insets(10, 5, 10, 5);
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbl.setConstraints(content, gbc);
 		
-//		gbc.gridy=2;
-//		gbc.anchor = GridBagConstraints.SOUTHWEST;
-//		gbc.fill = GridBagConstraints.NONE;
-//		gbl.setConstraints(links[0], gbc);
-		
 		gbc.anchor = GridBagConstraints.SOUTHWEST;
 		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = new Insets(0, 5, 0, 5);
 		
 		for(int i=0; i<(links.length);i++){
 			gbc.gridy=i+2;
+			if(links[i].getText().equals("contactez-nous"))
+				gbc.insets = new Insets(0, 20, 2, 5);
 			gbl.setConstraints(links[i], gbc);
 		}
 		
@@ -184,18 +201,31 @@ public class About extends JDialog implements ActionListener {
 		
 	}
 	
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		String s = ae.getActionCommand();
 		if(s.equals("ok"))
 				this.dispose();
-		else if(s.equals("http://upshotit.com")){
-			System.out.println("-->"+s);
-		}
-		else if(s.equals("http://studiomelipone.com")){
-			System.out.println("-->"+s);
-		}
-		else if(s.equals("http://freshfromthehive.eu")){
-			System.out.println("-->"+s);
+		else {
+			try {
+				if ( Desktop.isDesktopSupported() ) {//Test if the class Desktop is supported on the OS
+					Desktop desktop = Desktop.getDesktop();
+					
+					if(s.equals("contactez-nous")){
+						if(desktop.isSupported(Desktop.Action.MAIL))// test if the mail method is also supported
+							desktop.mail(new URI("mailto:contact@studiomelipone.eu"));
+					}
+					else if (desktop.isSupported(Desktop.Action.BROWSE)) {//test if the browse method is also supported
+						desktop.browse(new URI(s));
+					}
+				}
+			} catch (MalformedURLException e) {
+				JOptionPane.showMessageDialog(Smash.getFrames()[0], "About.actionPerformed() MalformedURException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(Smash.getFrames()[0], "About.actionPerformed() IOException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (URISyntaxException e) {
+				JOptionPane.showMessageDialog(Smash.getFrames()[0], "About.actionPerformed() URISyntaxException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 	}
 }

@@ -62,7 +62,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	private Integer answer;
 	
 	/**
-	 * 
+	 * Constructor of logging dialog box
 	 * @param origin will always be an instance of Smash class
 	 * @param uc instane of UpConnection class (created in Smash)
 	 */
@@ -160,6 +160,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		this.setVisible(true);
 	}
 	
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		String s = ae.getActionCommand();
 		if(s.equals("OK")){

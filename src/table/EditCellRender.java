@@ -51,6 +51,7 @@ public class EditCellRender extends JButton implements TableCellRenderer{
 		this.setForeground(Color.WHITE);
 	}
 	
+	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 													boolean selected, boolean focused, 
 													int row, int column) {

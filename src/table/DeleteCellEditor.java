@@ -53,6 +53,7 @@ public class DeleteCellEditor extends DefaultCellEditor implements ActionListene
 		this.model=model;
 	}
 	
+	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value,
               										boolean isSelected, int row, int column) {
 		btn.setBackground(table.getBackground());
@@ -67,18 +68,22 @@ public class DeleteCellEditor extends DefaultCellEditor implements ActionListene
 		return btn;
 	}
 	
+	@Override
 	public Object getCellEditorValue() {
 		return btn;
 	}
-		
+	
+	@Override
 	public boolean stopCellEditing() {
 		return super.stopCellEditing();
 	}
-		
+	
+	@Override
 	protected void fireEditingStopped() {
 		super.fireEditingStopped();
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		model.remove(row);
 		this.fireEditingStopped();

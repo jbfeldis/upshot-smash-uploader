@@ -51,6 +51,7 @@ public class DeleteCellRender extends JButton implements TableCellRenderer{
 		this.setFocusable(false);
 	}
 	
+	@Override
 	public Component getTableCellRendererComponent( JTable table, Object value,
 													boolean selected, boolean focused, 
 													int row, int column) {

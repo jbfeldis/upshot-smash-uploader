@@ -56,6 +56,7 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 		this.model=model;
 	}
 	
+	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value,
               										boolean isSelected, int row, int column) {
 		btn.setBackground(table.getBackground());
@@ -68,18 +69,22 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 		return btn;
 	}
 	
+	@Override
 	public Object getCellEditorValue() {
 		return btn;
 	}
-		
+	
+	@Override
 	public boolean stopCellEditing() {
 		return super.stopCellEditing();
 	}
-		
+	
+	@Override
 	protected void fireEditingStopped() {
 		super.fireEditingStopped();
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent ae) {
 		
 		ImageEditor ie = new ImageEditor(model.getImageFile(row));

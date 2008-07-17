@@ -30,9 +30,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
 
 import main.ImageFile;
+import main.Smash;
 
 /**
  * Model for the list of images dropped in the JDesktopPane
@@ -88,24 +90,29 @@ public class DataModel extends AbstractTableModel{
 		return imagesList.elementAt(row);
 	}
 
+	@Override
 	public int getColumnCount() {
 		return 5;
 	}
 
+	@Override
 	public String getColumnName(int columnIndex) {
 		return columnNames[columnIndex];
 	}
 
+	@Override
 	public int getRowCount() {
 		return imagesList.size();
 	}
 	
+	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		if(columnIndex==0 || columnIndex==1 || columnIndex==4)
 			return true;
 		return false;
 	}
 
+	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		switch(columnIndex){
 		case 0: return null;
@@ -117,6 +124,7 @@ public class DataModel extends AbstractTableModel{
 		return "ERROR";
 	}
 	
+	@Override
 	public void setValueAt(Object newTitle, int rowIndex, int columnIndex) {
 		if(columnIndex==1)
 			imagesList.elementAt(rowIndex).setTitle((String)newTitle);
@@ -129,16 +137,21 @@ public class DataModel extends AbstractTableModel{
 	 * @return The MIME-Type
 	 */
 	private static String getMIMEType(File file){
-	   if(file.isDirectory()){return "repertoire";}
-	   if(!file.exists()){return "fichier inexistant";}
+	   if(file.isDirectory())
+		   return "REPOSITORY";
+	   if(!file.exists())
+		   return "NO FILE FOUND";
+	   
 	   try{
 	      URL url = file.toURI().toURL();
 	      URLConnection connection = url.openConnection();
 	      return connection.getContentType();
-	   }catch(MalformedURLException mue){
-	      return mue.getMessage();
-	   }catch(IOException ioe){
-	      return ioe.getMessage();
-	      }
+	   }catch(MalformedURLException e){
+		   JOptionPane.showMessageDialog(Smash.getFrames()[0], "DataModel.getMIMEType() MalformedURLException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		   return "Error";
+	   }catch(IOException e){
+		   JOptionPane.showMessageDialog(Smash.getFrames()[0], "DataModel.getMIMEType() MalformedURLException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+		   return "Error";
+	   }
 	}
 }
