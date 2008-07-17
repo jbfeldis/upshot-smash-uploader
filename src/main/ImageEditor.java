@@ -23,6 +23,7 @@
  */
 package main;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -64,6 +65,8 @@ public class ImageEditor extends JDialog implements ActionListener {
 	public ImageEditor(ImageFile imf){
 		this.setResizable(false);
 		this.setModal(true);
+		this.getContentPane().setBackground(Color.decode("#656565"));
+		this.getContentPane().setForeground(Color.WHITE);
 		scale=80;
 		
 		try {
@@ -84,6 +87,7 @@ public class ImageEditor extends JDialog implements ActionListener {
 		panel = new JPanel(true);
 			panel.setPreferredSize(new Dimension(scale,scale));
 			panel.setDoubleBuffered(true);
+			panel.setOpaque(false);
 		name = new JLabel(imf.getFile().getAbsolutePath());
 		size = new JLabel(imf.getFile().length()/1024+"Ko");
 		titlelab = new JLabel("Title :");

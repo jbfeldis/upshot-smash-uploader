@@ -24,6 +24,7 @@
 package main;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -80,12 +81,12 @@ public class Smash extends JFrame implements ActionListener{
 	
 	private static final long serialVersionUID = 1L;//useless but avoid warning ;)
 	
-	private JPanel pane;
+	private JPanel flags, pane;
 	private JDesktopPane desk;
 	private DataModel model;
 	private JTable table;
 	private JScrollPane scroll;
-	private JButton sender, logger, helper;
+	private JButton sender, logger, helper, fr, en;
 	private TransferHandler handler;
 	private UpConnection uc;
 	private Login log;
@@ -101,6 +102,9 @@ public class Smash extends JFrame implements ActionListener{
         this.getContentPane().setBackground(background);
         this.getContentPane().setForeground(foreground);
         this.setIconImage(getIcon("upshot_logo.png").getImage());
+        
+        Dimension dim = new Dimension(680,420);
+        this.getContentPane().setSize(dim);
         
         /* 
          * STEP 0: prepare folders and files needed
@@ -119,9 +123,51 @@ public class Smash extends JFrame implements ActionListener{
 		 * the desk pane, 
 		 * the list of dropped images, 
 		 */
+		
+		Cursor hand = new Cursor(Cursor.HAND_CURSOR);
+		ImageIcon lfr = Smash.getIcon("fr.png");
+		ImageIcon len = Smash.getIcon("enus.png");
+		
+		flags = new JPanel();
+			flags.setBackground(Color.BLACK);
+			flags.setBorder(BorderFactory.createEmptyBorder());
+			
+		fr = new JButton(lfr);
+			fr.setActionCommand("fr");
+			fr.addActionListener(this);
+			fr.setOpaque(false);
+			fr.setBorder(BorderFactory.createEmptyBorder());
+			fr.setFocusable(false);
+			fr.setCursor(hand);
+		en = new JButton(len);
+			en.setActionCommand("en");
+			en.addActionListener(this);
+			en.setOpaque(false);
+			en.setBorder(BorderFactory.createEmptyBorder());
+			en.setFocusable(false);
+			en.setCursor(hand);
+			
+		GridBagLayout flagbl = new GridBagLayout();
+		GridBagConstraints flagbc = new GridBagConstraints();
+		flags.setLayout(flagbl);
+		
+		flagbc.gridx=0;
+		flagbc.gridy=0;
+		flagbc.fill=GridBagConstraints.NONE;
+		flagbc.anchor=GridBagConstraints.WEST;
+		flagbc.insets=new Insets(5, 20, 5, 2);
+		flagbl.setConstraints(fr, flagbc);
+		
+		flagbc.gridx=1;
+		flagbc.insets=new Insets(5, 2, 5, 624);
+		flagbl.setConstraints(en, flagbc);
+		
+		flags.add(fr);
+		flags.add(en);
         
         pane = new JPanel();
         pane.setOpaque(false);
+        pane.setBorder(BorderFactory.createEmptyBorder());
         desk = new JDesktopPane(){
 			private static final long serialVersionUID = 1L;
 
@@ -136,11 +182,11 @@ public class Smash extends JFrame implements ActionListener{
         	table = new JTable(model);
         scroll = new JScrollPane(table);
         
-        Dimension dim = new Dimension(680,420);
         desk.setSize(dim);
         desk.setPreferredSize(dim);
         desk.setRequestFocusEnabled(true);
         desk.requestFocus();
+        desk.setBorder(BorderFactory.createEmptyBorder());
         
         scroll.setPreferredSize(new Dimension(680,150));
         scroll.setBackground(background);
@@ -255,51 +301,66 @@ public class Smash extends JFrame implements ActionListener{
         myHead.add(format);
         myHead.add(size);
         
-        GridBagLayout gbl = new GridBagLayout();
-        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagLayout pgbl = new GridBagLayout();
+        GridBagConstraints pgbc = new GridBagConstraints();
         
-        gbc.gridx=0;
-        gbc.gridy=0;
-        gbc.gridwidth=3;
-        gbc.fill=GridBagConstraints.HORIZONTAL;
-        gbc.anchor=GridBagConstraints.NORTH;
-        gbl.setConstraints(desk, gbc);
+        pgbc.gridx=0;
+        pgbc.gridy=0;
+        pgbc.gridwidth=3;
+        pgbc.fill=GridBagConstraints.HORIZONTAL;
+        pgbc.anchor=GridBagConstraints.NORTH;
+        pgbl.setConstraints(desk, pgbc);
         
-        gbc.gridy=1;
-        gbc.gridx=2;
-        gbc.anchor=GridBagConstraints.CENTER;
-        gbl.setConstraints(myHead, gbc);
+        pgbc.gridy=1;
+        pgbc.gridx=2;
+        pgbc.anchor=GridBagConstraints.CENTER;
+        pgbl.setConstraints(myHead, pgbc);
         
-        gbc.gridy=2;
-        gbc.gridx=0;
-        gbl.setConstraints(scroll, gbc);
+        pgbc.gridy=2;
+        pgbc.gridx=0;
+        pgbl.setConstraints(scroll, pgbc);
         
-        gbc.gridy=3;
-        gbc.gridwidth=1;
-        gbc.ipady=10;
-        gbc.ipadx=10;
-        gbc.insets=new Insets(0,2,1,1);
-        gbc.anchor=GridBagConstraints.SOUTHWEST;
-        gbl.setConstraints(logger, gbc);
+        pgbc.gridy=3;
+        pgbc.gridwidth=1;
+        pgbc.ipady=10;
+        pgbc.ipadx=10;
+        pgbc.insets=new Insets(0,2,1,1);
+        pgbc.anchor=GridBagConstraints.SOUTHWEST;
+        pgbl.setConstraints(logger, pgbc);
         
-        gbc.gridx=1;
-        gbc.insets=new Insets(0,1,1,1);
-        gbl.setConstraints(helper, gbc);
+        pgbc.gridx=1;
+        pgbc.insets=new Insets(0,1,1,1);
+        pgbl.setConstraints(helper, pgbc);
         
-        gbc.gridx=2;
-        gbc.fill=GridBagConstraints.HORIZONTAL;
-        gbc.ipady=10;
-        gbc.insets=new Insets(0,1,1,2);
-        gbl.setConstraints(sender, gbc);
+        pgbc.gridx=2;
+        pgbc.fill=GridBagConstraints.HORIZONTAL;
+        pgbc.ipady=10;
+        pgbc.insets=new Insets(0,1,1,2);
+        pgbl.setConstraints(sender, pgbc);
         
-        pane.setLayout(gbl);
+        pane.setLayout(pgbl);
         pane.add(desk);
         pane.add(myHead);
         pane.add(scroll);
         pane.add(logger);
         pane.add(helper);
         pane.add(sender);
+        
+		GridBagLayout gbl = new GridBagLayout();
+		GridBagConstraints gbc = new GridBagConstraints();
+		this.getContentPane().setLayout(gbl);
+		
+		gbc.gridx=0;
+		gbc.gridy=0;
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.fill = GridBagConstraints.NONE;
+		gbl.setConstraints(flags, gbc);
+		
+		gbc.gridy=1;
+		gbc.anchor = GridBagConstraints.SOUTH;
+		gbl.setConstraints(pane, gbc);
 
+        this.add(flags);
         this.add(pane);
         this.pack();
         this.setLocationRelativeTo(null);
@@ -428,6 +489,7 @@ public class Smash extends JFrame implements ActionListener{
 				about = new About(this);
 			else about.setVisible(true);
 		}
+		// TODO fr and en action Locale
 	}
 	
 	/**

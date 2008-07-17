@@ -60,13 +60,13 @@ public class About extends JDialog implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	private JLabel upshot, real, melipone, content;
-	private JPanel top;
-	private JButton ok, links[];
+	private JPanel top, flags;
+	private JButton ok, links[], fr, en;
 
 	public About(JFrame origin){
 		super(origin, true);
 		this.setSize(new Dimension(680,340));
-        this.getContentPane().setBackground(Color.decode("#656565"));
+        this.getContentPane().setBackground(Color.decode("#CCCCCC"));
         this.getContentPane().setForeground(Color.WHITE);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
@@ -74,6 +74,47 @@ public class About extends JDialog implements ActionListener {
 		ImageIcon plainupshot = Smash.getIcon("upshot.png");
 		ImageIcon reallife = Smash.getIcon("reallife.png");
 		ImageIcon studiomelipone = Smash.getIcon("studiomelipone.png");
+		ImageIcon lfr = Smash.getIcon("fr.png");
+		ImageIcon len = Smash.getIcon("enus.png");
+		
+		Cursor hand = new Cursor(Cursor.HAND_CURSOR);
+		
+		flags = new JPanel();
+			flags.setBackground(Color.BLACK);
+			flags.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.DARK_GRAY));
+			
+		fr = new JButton(lfr);
+			fr.setActionCommand("fr");
+			fr.addActionListener(this);
+			fr.setOpaque(false);
+			fr.setBorder(BorderFactory.createEmptyBorder());
+			fr.setFocusable(false);
+			fr.setCursor(hand);
+		en = new JButton(len);
+			en.setActionCommand("en");
+			en.addActionListener(this);
+			en.setOpaque(false);
+			en.setBorder(BorderFactory.createEmptyBorder());
+			en.setFocusable(false);
+			en.setCursor(hand);
+			
+		GridBagLayout flagbl = new GridBagLayout();
+		GridBagConstraints flagbc = new GridBagConstraints();
+		flags.setLayout(flagbl);
+		
+		flagbc.gridx=0;
+		flagbc.gridy=0;
+		flagbc.fill=GridBagConstraints.NONE;
+		flagbc.anchor=GridBagConstraints.NORTHWEST;
+		flagbc.insets=new Insets(5, 10,5,2);
+		flagbl.setConstraints(fr, flagbc);
+		
+		flagbc.gridx=1;
+		flagbc.insets=new Insets(5,0,5,this.getWidth()+5);
+		flagbl.setConstraints(en, flagbc);
+		
+		flags.add(fr);
+		flags.add(en);
 		
 		top = new JPanel();
 			top.setBackground(Color.decode("#333333"));
@@ -108,7 +149,7 @@ public class About extends JDialog implements ActionListener {
 		topgbc.gridx=0;
 		topgbc.gridheight=1;
 		topgbc.gridwidth=1;
-		topgbc.insets = new Insets(0, 40, 1, 5);
+		topgbc.insets = new Insets(0, 30, 1, 5);
 		topgbc.anchor=GridBagConstraints.NORTHWEST;
 		topgbl.setConstraints(real, topgbc);
 		
@@ -140,8 +181,11 @@ public class About extends JDialog implements ActionListener {
 		
 		links = new JButton[4];// !!!! Remind the size to the number of elements ;)
 		links[0] = new JButton("<html><body><u>http://upshotit.com</u></body></html>");
+			links[0].setActionCommand("http://upshotit.com");
 		links[1] = new JButton("<html><body><u>http://studiomelipone.com</u></body></html>");
+			links[1].setActionCommand("http://studiomelipone.com");
 		links[2] = new JButton("<html><body><u>http://freshfromthehive.eu</u></body></html>");
+			links[2].setActionCommand("http://freshfromthehive.eu");
 		links[3] = new JButton("contactez-nous", Smash.getIcon("email.png"));
 		
 		Font font = new Font("Verdana",Font.ITALIC, 11);
@@ -152,7 +196,6 @@ public class About extends JDialog implements ActionListener {
 			btn.setBorderPainted(false);
 			btn.setFocusable(false);
 			btn.setFont(font);
-			Cursor hand = new Cursor(Cursor.HAND_CURSOR);
 			btn.setCursor(hand);
 		}
 		
@@ -162,11 +205,16 @@ public class About extends JDialog implements ActionListener {
 		
 		gbc.gridx=0;
 		gbc.gridy=0;
-		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.fill = GridBagConstraints.VERTICAL;
-		gbl.setConstraints(top, gbc);
+		gbc.anchor = GridBagConstraints.NORTHWEST;
+		gbc.fill = GridBagConstraints.NONE;
+		gbl.setConstraints(flags, gbc);
 		
 		gbc.gridy=1;
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbl.setConstraints(top, gbc);
+		
+		gbc.gridy=2;
 		gbc.insets = new Insets(10, 5, 10, 5);
 		gbc.anchor = GridBagConstraints.CENTER;
 		gbl.setConstraints(content, gbc);
@@ -176,18 +224,19 @@ public class About extends JDialog implements ActionListener {
 		gbc.insets = new Insets(0, 5, 0, 5);
 		
 		for(int i=0; i<(links.length);i++){
-			gbc.gridy=i+2;
+			gbc.gridy=i+3;
 			if(links[i].getText().equals("contactez-nous"))
 				gbc.insets = new Insets(0, 20, 2, 5);
 			gbl.setConstraints(links[i], gbc);
 		}
 		
-		gbc.gridy=links.length+2;
+		gbc.gridy=links.length+3;
 		gbc.anchor = GridBagConstraints.SOUTHEAST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(0, 0, 10, 10);
 		gbl.setConstraints(ok, gbc);
 		
+		this.add(flags);
 		this.add(top);
 		this.add(content);
 		for(JButton btn : links){
@@ -228,4 +277,5 @@ public class About extends JDialog implements ActionListener {
 			}
 		}
 	}
+	// TODO fr and en action Locale 
 }

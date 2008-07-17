@@ -70,6 +70,8 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		super(origin, "Authentication");
 		this.setModal(true);
 		this.setResizable(false);
+		this.getContentPane().setBackground(Color.decode("#656565"));
+		this.getContentPane().setForeground(Color.WHITE);
 		
 		answer=0;
 		this.uc=uc;
