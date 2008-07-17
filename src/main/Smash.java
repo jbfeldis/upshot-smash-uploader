@@ -100,7 +100,7 @@ public class Smash extends JFrame implements ActionListener{
         this.setResizable(false);
         this.getContentPane().setBackground(background);
         this.getContentPane().setForeground(foreground);
-        this.setIconImage(getIcon("upshot.png").getImage());
+        this.setIconImage(getIcon("upshot_logo.png").getImage());
         
         /* 
          * STEP 0: prepare folders and files needed
