@@ -160,12 +160,13 @@ public class ImageEditor extends JDialog implements ActionListener {
 	 */
 	public void setResourceBundle(ResourceBundle rb){
 		msg=rb;
+		this.displayLanguage();
 	}
 	
 	/**
 	 * Redraw all labels and buttons in the appropriate language
 	 */
-	public void displayLanguage(){
+	private void displayLanguage(){
 		titlelab.setText(msg.getString("title")+" :");
 	}
 	

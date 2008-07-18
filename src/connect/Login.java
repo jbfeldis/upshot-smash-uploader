@@ -172,6 +172,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	 */
 	public void setResourceBundle(ResourceBundle rb){
 		msg=rb;
+		this.displayLanguage();
 	}
 	
 	/**

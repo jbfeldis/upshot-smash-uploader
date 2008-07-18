@@ -322,11 +322,8 @@ public class Smash extends JFrame implements ActionListener{
         
     	// For all other components
 		delCellRender.setResourceBundle(msg);
-		delCellRender.displayLanguage();
 		editCellRender.setResourceBundle(msg);
-		editCellRender.displayLanguage();
 		editCellEditor.setResourceBundle(msg);
-		editCellEditor.displayLanguage();
         
         GridBagLayout pgbl = new GridBagLayout();
         GridBagConstraints pgbc = new GridBagConstraints();
@@ -484,9 +481,18 @@ public class Smash extends JFrame implements ActionListener{
 	}
 	
 	/**
+	 * Set the language resource from About
+	 * @param rb the ResourceBundle representing the language
+	 */
+	public void setResourceBundle(ResourceBundle rb){
+		msg=rb;
+		this.displayLanguage();
+	}
+	
+	/**
 	 * Redraw all labels and buttons in the appropriate language
 	 */
-	public void displayLanguage(){
+	private void displayLanguage(){
 		// For the button and labels in this frame
     	sender.setText(msg.getString("send"));
     	title.setText(msg.getString("title")+"                           ");
@@ -495,13 +501,9 @@ public class Smash extends JFrame implements ActionListener{
     	
     	// For all other components
 		log.setResourceBundle(msg);
-		log.displayLanguage();
 		delCellRender.setResourceBundle(msg);
-		delCellRender.displayLanguage();
 		editCellRender.setResourceBundle(msg);
-		editCellRender.displayLanguage();
 		editCellEditor.setResourceBundle(msg);
-		editCellEditor.displayLanguage();
 		table.repaint();
 	}
 
@@ -538,8 +540,11 @@ public class Smash extends JFrame implements ActionListener{
 			else sender.setEnabled(false);
 		}
 		else if(s.equals("help")){
-			if(about==null)
+			if(about==null){
 				about = new About(this);
+				about.setResourceBundle(msg);
+				about.setVisible(true);
+			}
 			else about.setVisible(true);
 		}
 		else if(s.equals("fr")){

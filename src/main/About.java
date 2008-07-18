@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -62,14 +64,19 @@ public class About extends JDialog implements ActionListener {
 	private JLabel upshot, real, melipone, content;
 	private JPanel top, flags;
 	private JButton ok, links[], fr, en;
+	private Locale locale = Locale.getDefault();
+	private ResourceBundle msg;
+	private Smash origin;
 
 	public About(JFrame origin){
 		super(origin, true);
+		this.origin=(Smash)origin;
 		this.setSize(new Dimension(680,340));
         this.getContentPane().setBackground(Color.decode("#CCCCCC"));
         this.getContentPane().setForeground(Color.WHITE);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		this.setUndecorated(true);
 		
 		ImageIcon plainupshot = Smash.getIcon("upshot.png");
 		ImageIcon reallife = Smash.getIcon("reallife.png");
@@ -161,21 +168,6 @@ public class About extends JDialog implements ActionListener {
 		content.setPreferredSize(new Dimension(this.getWidth(),200));
 		content.setVerticalAlignment(JLabel.TOP);
 	
-		String txt = "<html><body><b><font size=6>Smash Uploader</font></b> is an <i>OpenSource</i> plugin for <b><font size=4>UpShot</font></b>, " +
-							 "distributed by <b>Studio Melipone</b> under the GNU Lesser General Public License.<br>" +
-				 			 "<br>" +
-				 			 "The goal of this <i>multiplatform</i> application is to help you to <b><font size=5>drop</font></b> several <b>images</b> from " +
-				 			 "<u><font size=4>your desktop</font></u> into a list of images, in order to instantly <b><font size=5>send</font></b> them to <u><font size=4>your UpShot account</font></u>.<br>" +
-				 			 "<br><br>" +
-				 			 "<font size=3>" +
-				 			 	"Smash Uploader v.1.0<br>" +
-				 			 	"Copyright 2008 Studio Melipone<br>" +
-				 			 	"<i>GNU Lesser General Public License v.3</i>" +
-				 			 "</font>" +
-				 	"</body></html>";
-
-		content.setText(txt);
-	
 		ok = new JButton("ok");
 		ok.addActionListener(this);
 		
@@ -186,7 +178,8 @@ public class About extends JDialog implements ActionListener {
 			links[1].setActionCommand("http://studiomelipone.com");
 		links[2] = new JButton("<html><body><u>http://freshfromthehive.eu</u></body></html>");
 			links[2].setActionCommand("http://freshfromthehive.eu");
-		links[3] = new JButton("contactez-nous", Smash.getIcon("email.png"));
+		links[3] = new JButton(Smash.getIcon("email.png"));
+			links[3].setActionCommand("contactus");
 		
 		Font font = new Font("Verdana",Font.ITALIC, 11);
 		
@@ -246,8 +239,52 @@ public class About extends JDialog implements ActionListener {
 		
 		this.pack();
 		this.setLocationRelativeTo(origin);
-		this.setVisible(true);
-		
+	}
+	
+	/**
+	 * Set the language resource as given in Smash class
+	 * @param rb the ResourceBundle representing the language
+	 */
+	public void setResourceBundle(ResourceBundle rb){
+		msg=rb;
+		this.displayLanguage();
+	}
+	
+	/**
+	 * Redraw all labels and buttons in the appropriate language
+	 */
+	private void displayLanguage(){
+		links[3].setText(msg.getString("contactus"));
+		String txt="";
+		if(locale.getLanguage().equals("en")){
+			txt = "<html><body><b><font size=6>Smash Uploader</font></b> is an <i>OpenSource</i> plugin for <b><font size=4>UpShot</font></b>, " +
+								 "distributed by <b>Studio Melipone</b> under the GNU Lesser General Public License.<br>" +
+					 			 "<br>" +
+					 			 "The goal of this <i>multiplatform</i> application is to help you to <b><font size=5>drop</font></b> several <b>images</b> from " +
+					 			 "<u><font size=4>your desktop</font></u> into a list of images, in order to instantly <b><font size=5>send</font></b> them to <u><font size=4>your UpShot account</font></u>.<br>" +
+					 			 "<br><br>" +
+					 			 "<font size=3>" +
+					 			 	"Smash Uploader v.1.0<br>" +
+					 			 	"Copyright 2008 Studio Melipone<br>" +
+					 			 	"<i>GNU Lesser General Public License v.3</i>" +
+					 			 "</font>" +
+					 	"</body></html>";
+			}
+			else if(locale.getLanguage().equals("fr")){
+				txt = "<html><body><b><font size=6>Smash Uploader</font></b> est un plugin <i>OpenSource</i> pour <b><font size=4>UpShot</font></b>, " +
+								 "distribué par <b>Studio Melipone</b> sous la licence : GNU Lesser General Public License.<br>" +
+								 "<br>" +
+								 "Le but de cette application <i>multi-platformes</i> est de vous aider à <b><font size=5>déposer</font></b> plusieur <b>images</b> depuis " +
+								 "<u><font size=4>votre bureau</font></u> jusque dans une liste d'images, pour les <b><font size=5>envoyer</font></b> instantanément sur <u><font size=4>votre compte UpShot</font></u>.<br>" +
+								 "<br><br>" +
+								 "<font size=3>" +
+								 	"Smash Uploader v.1.0<br>" +
+								 	"Copyright 2008 Studio Melipone<br>" +
+								 	"<i>GNU Lesser General Public License v.3</i>" +
+								 "</font>" +
+					  "</body></html>";
+			}
+		content.setText(txt);
 	}
 	
 	@Override
@@ -255,12 +292,24 @@ public class About extends JDialog implements ActionListener {
 		String s = ae.getActionCommand();
 		if(s.equals("ok"))
 				this.dispose();
+		else if(s.equals("fr")){
+			locale = new Locale("fr","FR");
+			msg = ResourceBundle.getBundle("doc/trans", locale);
+			this.displayLanguage();
+			origin.setResourceBundle(msg);
+		}
+		else if(s.equals("en")){
+			locale = new Locale("en","US");
+			msg = ResourceBundle.getBundle("doc/trans", locale);
+			this.displayLanguage();
+			origin.setResourceBundle(msg);
+		}
 		else {
 			try {
 				if ( Desktop.isDesktopSupported() ) {//Test if the class Desktop is supported on the OS
 					Desktop desktop = Desktop.getDesktop();
 					
-					if(s.equals("contactez-nous")){
+					if(s.equals("contactus")){
 						if(desktop.isSupported(Desktop.Action.MAIL))// test if the mail method is also supported
 							desktop.mail(new URI("mailto:contact@studiomelipone.eu"));
 					}
@@ -277,5 +326,4 @@ public class About extends JDialog implements ActionListener {
 			}
 		}
 	}
-	// TODO fr and en action Locale 
 }

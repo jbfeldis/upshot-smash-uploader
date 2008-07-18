@@ -59,12 +59,13 @@ public class DeleteCellRender extends JButton implements TableCellRenderer{
 	 */
 	public void setResourceBundle(ResourceBundle rb){
 		msg=rb;
+		this.displayLanguage();
 	}
 	
 	/**
 	 * Redraw all labels and buttons in the appropriate language
 	 */
-	public void displayLanguage(){
+	private void displayLanguage(){
 		sending = msg.getString("sending");
 		tooltip = msg.getString("tooltip_delrow");
 	}

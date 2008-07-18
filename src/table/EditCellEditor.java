@@ -76,12 +76,13 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 	 */
 	public void setResourceBundle(ResourceBundle rb){
 		msg=rb;
+		this.displayLanguage();
 	}
 	
 	/**
 	 * Redraw all labels and buttons in the appropriate language
 	 */
-	public void displayLanguage(){
+	private void displayLanguage(){
 		btn.setText(msg.getString("edit"));
 	}
 	
@@ -105,7 +106,6 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 		
 		ImageEditor ime = new ImageEditor(model.getImageFile(row));
 		ime.setResourceBundle(msg);
-		ime.displayLanguage();
 		ime.setVisible(true);
 		
 		if(ime.getTitle()!=null && !ime.getTitle().isEmpty())
