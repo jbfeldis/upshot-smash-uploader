@@ -31,6 +31,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.Serializable;
+import java.util.ResourceBundle;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -59,6 +60,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	private String login, passwd;
 	private char [] pass;
 	private transient UpConnection uc;//need to be transient because HttpURLConnection can't be serialized 
+	private transient ResourceBundle msg;//can't be serialized either
 	private Integer answer;
 	
 	/**
@@ -67,7 +69,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	 * @param uc instane of UpConnection class (created in Smash)
 	 */
 	public Login(JFrame origin, UpConnection uc){
-		super(origin, "Authentication");
+		super(origin);
 		this.setModal(true);
 		this.setResizable(false);
 		this.getContentPane().setBackground(Color.decode("#656565"));
@@ -85,17 +87,20 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		ok = new JButton("OK");
 			ok.addActionListener(this);
 			ok.setOpaque(false);
-		cancel = new JButton("Cancel");
+		cancel = new JButton();
+			cancel.setActionCommand("Cancel");
 			cancel.addActionListener(this);
 			cancel.setOpaque(false);
 		
 		loginlab = new JLabel("E-mail :");
 			loginlab.setLabelFor(loginbox);
-		passwdlab = new JLabel("Password :");
+		passwdlab = new JLabel();
 			passwdlab.setLabelFor(passwdbox);
 		message = new JLabel();
 			Font font = new Font("Verdana",Font.BOLD,10);
 			message.setFont(font);
+			
+		this.displayLanguage();
 
 		gbl = new GridBagLayout();
 		gbc = new GridBagConstraints();
@@ -159,7 +164,23 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		init();
 		this.pack();
 		this.setLocationRelativeTo(origin);
-		this.setVisible(true);
+	}
+	
+	/**
+	 * Set the language resource as given in Smash class
+	 * @param rb the ResourceBundle representing the language
+	 */
+	public void setResourceBundle(ResourceBundle rb){
+		msg=rb;
+	}
+	
+	/**
+	 * Redraw all labels and buttons in the appropriate language
+	 */
+	public void displayLanguage(){
+		this.setTitle(msg.getString("login_title"));
+		cancel.setText(msg.getString("cancel"));
+		passwdlab.setText(msg.getString("passwd"));
 	}
 	
 	@Override
@@ -180,7 +201,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 			
 			if(login.isEmpty() || passwd.isEmpty()){
 				message.setForeground(Color.decode("#FF6600"));
-				message.setText("Some fields are empty");
+				message.setText(msg.getString("warn_empty"));
 				this.pack();
 			}
 			else{
@@ -189,7 +210,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 				if((answer=uc.getId())<=0){
 					init();
 					message.setForeground(Color.RED);
-					message.setText("Wrong login or password");
+					message.setText(msg.getString("err_wrong"));
 					this.pack();
 				} else {
 					message.setText("");

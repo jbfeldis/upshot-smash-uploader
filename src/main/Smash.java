@@ -45,6 +45,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -85,8 +87,12 @@ public class Smash extends JFrame implements ActionListener{
 	private JDesktopPane desk;
 	private DataModel model;
 	private JTable table;
+	private DeleteCellRender delCellRender;
+	private EditCellRender editCellRender;
+	private EditCellEditor editCellEditor;
 	private JScrollPane scroll;
 	private JButton sender, logger, helper, fr, en;
+	private JLabel title,format, size;;
 	private TransferHandler handler;
 	private UpConnection uc;
 	private Login log;
@@ -94,6 +100,8 @@ public class Smash extends JFrame implements ActionListener{
 	private About about;
 	private final Color background = Color.decode("#656565");
 	private final Color foreground = Color.WHITE;
+	private Locale locale = Locale.getDefault();
+	private ResourceBundle msg;
 
 	public Smash(){
 		super("Smash Uploader");
@@ -102,6 +110,8 @@ public class Smash extends JFrame implements ActionListener{
         this.getContentPane().setBackground(background);
         this.getContentPane().setForeground(foreground);
         this.setIconImage(getIcon("upshot_logo.png").getImage());
+        
+        msg = ResourceBundle.getBundle("doc/trans", locale);
         
         Dimension dim = new Dimension(680,420);
         this.getContentPane().setSize(dim);
@@ -228,7 +238,7 @@ public class Smash extends JFrame implements ActionListener{
 		/*Column Delete*/
 		TableColumn column = table.getColumnModel().getColumn(0);
 		column.setPreferredWidth(10);
-        DeleteCellRender delCellRender = new DeleteCellRender();
+        delCellRender = new DeleteCellRender();
         DeleteCellEditor delCellEditor = new DeleteCellEditor(model);
 		column.setCellRenderer(delCellRender);
 		column.setCellEditor(delCellEditor);
@@ -253,8 +263,8 @@ public class Smash extends JFrame implements ActionListener{
 		column = table.getColumnModel().getColumn(4);
 		column.setPreferredWidth(10);
 		column.setResizable(false);
-        EditCellRender editCellRender = new EditCellRender();
-        EditCellEditor editCellEditor = new EditCellEditor(model);
+        editCellRender = new EditCellRender();
+        editCellEditor = new EditCellEditor(model);
 		column.setCellRenderer(editCellRender);
 		column.setCellEditor(editCellEditor);
         
@@ -272,7 +282,8 @@ public class Smash extends JFrame implements ActionListener{
         	helper.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         	helper.setOpaque(false);
         	helper.setBackground(background);
-        sender = new JButton("SEND");
+        sender = new JButton();
+        	sender.setActionCommand("SEND");
         	sender.addActionListener(this);
         	sender.setEnabled(false);
         	sender.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
@@ -283,14 +294,13 @@ public class Smash extends JFrame implements ActionListener{
         /*
          * Wiredly ugly coded customized header
          * */
-        JLabel title,format, size;
-        title=new JLabel("Title                           ");
+        title=new JLabel();
         	title.setBackground(background);
         	title.setForeground(foreground);
-        format=new JLabel("          Format                       ");
+        format=new JLabel();
         	format.setBackground(background);
         	format.setForeground(foreground);
-        size=new JLabel("Size                              ");
+        size=new JLabel();
         	size.setBackground(background);
         	size.setForeground(foreground);
         JPanel myHead = new JPanel();
@@ -300,6 +310,23 @@ public class Smash extends JFrame implements ActionListener{
         myHead.add(title);
         myHead.add(format);
         myHead.add(size);
+        
+        /* Do not forget to display labels and buttons text 
+         * in the wanted language
+         * */
+		// For the button and labels in this frame
+    	sender.setText(msg.getString("send"));
+    	title.setText(msg.getString("title")+"                           ");
+    	format.setText("          "+msg.getString("format")+"                       ");
+    	size.setText(msg.getString("size")+"                              ");
+        
+    	// For all other components
+		delCellRender.setResourceBundle(msg);
+		delCellRender.displayLanguage();
+		editCellRender.setResourceBundle(msg);
+		editCellRender.displayLanguage();
+		editCellEditor.setResourceBundle(msg);
+		editCellEditor.displayLanguage();
         
         GridBagLayout pgbl = new GridBagLayout();
         GridBagConstraints pgbc = new GridBagConstraints();
@@ -432,8 +459,12 @@ public class Smash extends JFrame implements ActionListener{
 		File fconfig = new File(home+folder+file);
 		if(fconfig.exists())
 			load();
-		else
+		else{
 			log = new Login(this, uc);
+			log.setResourceBundle(msg);
+			log.setVisible(true);
+		}
+		
 		
 		if(log.getAnswer()>0){
 			save();
@@ -450,6 +481,28 @@ public class Smash extends JFrame implements ActionListener{
             	up.setVisible(true);
             }
         });
+	}
+	
+	/**
+	 * Redraw all labels and buttons in the appropriate language
+	 */
+	public void displayLanguage(){
+		// For the button and labels in this frame
+    	sender.setText(msg.getString("send"));
+    	title.setText(msg.getString("title")+"                           ");
+    	format.setText("          "+msg.getString("format")+"                       ");
+    	size.setText(msg.getString("size")+"                              ");
+    	
+    	// For all other components
+		log.setResourceBundle(msg);
+		log.displayLanguage();
+		delCellRender.setResourceBundle(msg);
+		delCellRender.displayLanguage();
+		editCellRender.setResourceBundle(msg);
+		editCellRender.displayLanguage();
+		editCellEditor.setResourceBundle(msg);
+		editCellEditor.displayLanguage();
+		table.repaint();
 	}
 
 	@Override
@@ -489,7 +542,16 @@ public class Smash extends JFrame implements ActionListener{
 				about = new About(this);
 			else about.setVisible(true);
 		}
-		// TODO fr and en action Locale
+		else if(s.equals("fr")){
+			locale = new Locale("fr","FR");
+			msg = ResourceBundle.getBundle("doc/trans", locale);
+			this.displayLanguage();
+		}
+		else if(s.equals("en")){
+			locale = new Locale("en","US");
+			msg = ResourceBundle.getBundle("doc/trans", locale);
+			this.displayLanguage();
+		}
 	}
 	
 	/**
@@ -529,6 +591,7 @@ public class Smash extends JFrame implements ActionListener{
 			JOptionPane.showMessageDialog(Smash.getFrames()[0], "Smash.load() ClassNotFoundException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	    log.setConnectionConfig(uc);
+	    log.setResourceBundle(msg);
 	}
 	
 	/**

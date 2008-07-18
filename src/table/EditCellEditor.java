@@ -26,6 +26,7 @@ package table;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ResourceBundle;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
@@ -48,6 +49,7 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 	private DataModel model;
 	private int row;
 	private JButton btn;
+	private ResourceBundle msg;
 	
 	public EditCellEditor(DataModel model) {
 		super(new JCheckBox());
@@ -64,9 +66,23 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 		btn.setBorderPainted(false);
 		btn.setFocusable(false);
 		btn.setIcon(Smash.getIcon("edit.png"));
-		btn.setText("Edit");
 		this.row=row;
 		return btn;
+	}
+	
+	/**
+	 * Set the language resource as given in Smash class
+	 * @param rb the ResourceBundle representing the language
+	 */
+	public void setResourceBundle(ResourceBundle rb){
+		msg=rb;
+	}
+	
+	/**
+	 * Redraw all labels and buttons in the appropriate language
+	 */
+	public void displayLanguage(){
+		btn.setText(msg.getString("edit"));
 	}
 	
 	@Override
@@ -87,10 +103,13 @@ public class EditCellEditor extends DefaultCellEditor implements ActionListener 
 	@Override
 	public void actionPerformed(ActionEvent ae) {
 		
-		ImageEditor ie = new ImageEditor(model.getImageFile(row));
+		ImageEditor ime = new ImageEditor(model.getImageFile(row));
+		ime.setResourceBundle(msg);
+		ime.displayLanguage();
+		ime.setVisible(true);
 		
-		if(ie.getTitle()!=null && !ie.getTitle().isEmpty())
-			model.getImageFile(row).setTitle(ie.getTitle());
+		if(ime.getTitle()!=null && !ime.getTitle().isEmpty())
+			model.getImageFile(row).setTitle(ime.getTitle());
 		this.fireEditingStopped();
 	}
 }

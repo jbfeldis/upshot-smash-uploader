@@ -34,6 +34,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ResourceBundle;
 
 import javax.imageio.ImageIO;
 import javax.swing.JButton;
@@ -61,6 +62,7 @@ public class ImageEditor extends JDialog implements ActionListener {
 	private Image image;
 	private int w,h, scale;
 	private String new_title;
+	private ResourceBundle msg;
 	
 	public ImageEditor(ImageFile imf){
 		this.setResizable(false);
@@ -90,7 +92,7 @@ public class ImageEditor extends JDialog implements ActionListener {
 			panel.setOpaque(false);
 		name = new JLabel(imf.getFile().getAbsolutePath());
 		size = new JLabel(imf.getFile().length()/1024+"Ko");
-		titlelab = new JLabel("Title :");
+		titlelab = new JLabel();
 		title = new JTextField(imf.getTitle(),20);
 			title.setActionCommand("OK");
 			title.addActionListener(this);
@@ -150,8 +152,21 @@ public class ImageEditor extends JDialog implements ActionListener {
 		
 		this.pack();
 		this.setLocationRelativeTo(Smash.getFrames()[0]);
-		this.setVisible(true);
-
+	}
+	
+	/**
+	 * Set the language resource as given in Smash class
+	 * @param rb the ResourceBundle representing the language
+	 */
+	public void setResourceBundle(ResourceBundle rb){
+		msg=rb;
+	}
+	
+	/**
+	 * Redraw all labels and buttons in the appropriate language
+	 */
+	public void displayLanguage(){
+		titlelab.setText(msg.getString("title")+" :");
 	}
 	
 	public void paint(Graphics g){

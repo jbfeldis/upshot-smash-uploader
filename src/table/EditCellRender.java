@@ -25,6 +25,7 @@ package table;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ResourceBundle;
 
 import javax.swing.JButton;
 import javax.swing.JTable;
@@ -42,13 +43,28 @@ import main.Smash;
 public class EditCellRender extends JButton implements TableCellRenderer{
 
 	private static final long serialVersionUID = 1L;
+	private ResourceBundle msg;
 	
 	public EditCellRender(){
 	    this.setIcon(Smash.getIcon("edit.png"));
-	    this.setText("Edit");
 		this.setBorderPainted(false);
 		this.setOpaque(false);
 		this.setForeground(Color.WHITE);
+	}
+	
+	/**
+	 * Set the language resource as given in Smash class
+	 * @param rb the ResourceBundle representing the language
+	 */
+	public void setResourceBundle(ResourceBundle rb){
+		msg=rb;
+	}
+	
+	/**
+	 * Redraw all labels and buttons in the appropriate language
+	 */
+	public void displayLanguage(){
+		this.setText(msg.getString("edit"));
 	}
 	
 	@Override

@@ -25,6 +25,8 @@ package table;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ResourceBundle;
+
 import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
@@ -41,14 +43,30 @@ import main.Smash;
 public class DeleteCellRender extends JButton implements TableCellRenderer{
 
 	private static final long serialVersionUID = 1L;
-	int row;
-	JTable table;
+	private ResourceBundle msg;
+	private String sending, tooltip;
 	
 	public DeleteCellRender(){
 		this.setBorderPainted(false);
 		this.setForeground(Color.WHITE);
 		this.setOpaque(false);
 		this.setFocusable(false);
+	}
+	
+	/**
+	 * Set the language resource as given in Smash class
+	 * @param rb the ResourceBundle representing the language
+	 */
+	public void setResourceBundle(ResourceBundle rb){
+		msg=rb;
+	}
+	
+	/**
+	 * Redraw all labels and buttons in the appropriate language
+	 */
+	public void displayLanguage(){
+		sending = msg.getString("sending");
+		tooltip = msg.getString("tooltip_delrow");
 	}
 	
 	@Override
@@ -64,14 +82,12 @@ public class DeleteCellRender extends JButton implements TableCellRenderer{
 		}
 		else if(((DataModel)table.getModel()).getImageFile(row).isSending()){
 			this.setIcon(null);
-			this.setText("Sending");
+			this.setText(sending);
 			this.setToolTipText(null);
-			this.row=row;
-			this.table=table;
 		}
 		else{
 			this.setIcon(Smash.getIcon("cross.png"));
-			this.setToolTipText("Delete this image from the list");
+			this.setToolTipText(tooltip);
 			this.setText("");
 		}
 		return this;
