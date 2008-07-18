@@ -69,8 +69,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	 * @param uc instane of UpConnection class (created in Smash)
 	 */
 	public Login(JFrame origin, UpConnection uc){
-		super(origin);
-		this.setModal(true);
+		super(origin, true);
 		this.setResizable(false);
 		this.getContentPane().setBackground(Color.decode("#656565"));
 		this.getContentPane().setForeground(Color.WHITE);

@@ -387,7 +387,6 @@ public class Smash extends JFrame implements ActionListener{
         this.add(flags);
         this.add(pane);
         this.pack();
-        this.setLocationRelativeTo(null);
         
         /*
          * STEP 2 : The transferHandler
@@ -469,6 +468,8 @@ public class Smash extends JFrame implements ActionListener{
 				sender.setEnabled(true);
 		}
 		else sender.setEnabled(false);
+		
+      this.setLocationRelativeTo(null);
 	}
 
 	public static void main(String[] args) {
