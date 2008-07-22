@@ -98,8 +98,6 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		message = new JLabel();
 			Font font = new Font("Verdana",Font.BOLD,10);
 			message.setFont(font);
-			
-		this.displayLanguage();
 
 		gbl = new GridBagLayout();
 		gbc = new GridBagConstraints();

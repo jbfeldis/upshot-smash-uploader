@@ -247,6 +247,7 @@ public class About extends JDialog implements ActionListener {
 	 */
 	public void setResourceBundle(ResourceBundle rb){
 		msg=rb;
+		locale=rb.getLocale();
 		this.displayLanguage();
 	}
 	

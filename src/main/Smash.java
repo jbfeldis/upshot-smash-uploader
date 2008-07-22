@@ -546,7 +546,10 @@ public class Smash extends JFrame implements ActionListener{
 				about.setResourceBundle(msg);
 				about.setVisible(true);
 			}
-			else about.setVisible(true);
+			else {
+				about.setResourceBundle(msg);
+				about.setVisible(true);
+			}
 		}
 		else if(s.equals("fr")){
 			locale = new Locale("fr","FR");
