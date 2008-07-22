@@ -91,12 +91,12 @@ public class Smash extends JFrame implements ActionListener{
 	private EditCellRender editCellRender;
 	private EditCellEditor editCellEditor;
 	private JScrollPane scroll;
-	private JButton sender, logger, helper, fr, en;
+	private JButton sender, logger, abouter, helper, fr, en;
 	private JLabel title,format, size;;
 	private TransferHandler handler;
 	private UpConnection uc;
 	private Login log;
-	private String home, folder, file;
+	private String home, folder, file, languages;
 	private About about;
 	private final Color background = Color.decode("#656565");
 	private final Color foreground = Color.WHITE;
@@ -111,7 +111,8 @@ public class Smash extends JFrame implements ActionListener{
         this.getContentPane().setForeground(foreground);
         this.setIconImage(getIcon("upshot_logo.png").getImage());
         
-        msg = ResourceBundle.getBundle("doc/trans", locale);
+        languages = "doc/languages/trans";
+        msg = ResourceBundle.getBundle(languages, locale);
         
         Dimension dim = new Dimension(680,420);
         this.getContentPane().setSize(dim);
@@ -278,10 +279,16 @@ public class Smash extends JFrame implements ActionListener{
         	logger.setBackground(background);
         helper = new JButton(Smash.getIcon("help.png"));
         	helper.setActionCommand("help");
-        	helper.addActionListener(this);
-        	helper.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
-        	helper.setOpaque(false);
-        	helper.setBackground(background);
+	        helper.addActionListener(this);
+	        helper.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+	        helper.setOpaque(false);
+	        helper.setBackground(background);
+        abouter = new JButton(Smash.getIcon("upshot_logo.png"));
+        	abouter.setActionCommand("about");
+        	abouter.addActionListener(this);
+        	abouter.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
+        	abouter.setOpaque(false);
+        	abouter.setBackground(background);
         sender = new JButton();
         	sender.setActionCommand("SEND");
         	sender.addActionListener(this);
@@ -330,7 +337,7 @@ public class Smash extends JFrame implements ActionListener{
         
         pgbc.gridx=0;
         pgbc.gridy=0;
-        pgbc.gridwidth=3;
+        pgbc.gridwidth=4;
         pgbc.fill=GridBagConstraints.HORIZONTAL;
         pgbc.anchor=GridBagConstraints.NORTH;
         pgbl.setConstraints(desk, pgbc);
@@ -357,6 +364,9 @@ public class Smash extends JFrame implements ActionListener{
         pgbl.setConstraints(helper, pgbc);
         
         pgbc.gridx=2;
+        pgbl.setConstraints(abouter, pgbc);
+        
+        pgbc.gridx=3;
         pgbc.fill=GridBagConstraints.HORIZONTAL;
         pgbc.ipady=10;
         pgbc.insets=new Insets(0,1,1,2);
@@ -368,6 +378,7 @@ public class Smash extends JFrame implements ActionListener{
         pane.add(scroll);
         pane.add(logger);
         pane.add(helper);
+        pane.add(abouter);
         pane.add(sender);
         
 		GridBagLayout gbl = new GridBagLayout();
@@ -540,7 +551,7 @@ public class Smash extends JFrame implements ActionListener{
 			}
 			else sender.setEnabled(false);
 		}
-		else if(s.equals("help")){
+		else if(s.equals("about")){
 			if(about==null){
 				about = new About(this);
 				about.setResourceBundle(msg);
@@ -551,14 +562,17 @@ public class Smash extends JFrame implements ActionListener{
 				about.setVisible(true);
 			}
 		}
+		else if(s.equals("help")){
+			
+		}
 		else if(s.equals("fr")){
 			locale = new Locale("fr","FR");
-			msg = ResourceBundle.getBundle("doc/trans", locale);
+			msg = ResourceBundle.getBundle(languages, locale);
 			this.displayLanguage();
 		}
 		else if(s.equals("en")){
 			locale = new Locale("en","US");
-			msg = ResourceBundle.getBundle("doc/trans", locale);
+			msg = ResourceBundle.getBundle(languages, locale);
 			this.displayLanguage();
 		}
 	}

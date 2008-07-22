@@ -66,6 +66,7 @@ public class About extends JDialog implements ActionListener {
 	private JButton ok, links[], fr, en;
 	private Locale locale = Locale.getDefault();
 	private ResourceBundle msg;
+	private String languages;
 	private Smash origin;
 
 	public About(JFrame origin){
@@ -77,6 +78,8 @@ public class About extends JDialog implements ActionListener {
 		this.setResizable(false);
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.setUndecorated(true);
+		
+		languages = "doc/languages/trans";
 		
 		ImageIcon plainupshot = Smash.getIcon("upshot.png");
 		ImageIcon reallife = Smash.getIcon("reallife.png");
@@ -218,7 +221,7 @@ public class About extends JDialog implements ActionListener {
 		
 		for(int i=0; i<(links.length);i++){
 			gbc.gridy=i+3;
-			if(links[i].getText().equals("contactez-nous"))
+			if(links[i].getActionCommand().equals("contactus"))
 				gbc.insets = new Insets(0, 20, 2, 5);
 			gbl.setConstraints(links[i], gbc);
 		}
@@ -255,7 +258,7 @@ public class About extends JDialog implements ActionListener {
 	 * Redraw all labels and buttons in the appropriate language
 	 */
 	private void displayLanguage(){
-		links[3].setText(msg.getString("contactus"));
+		links[3].setText("<html><body><u>"+msg.getString("contactus")+"</u></body><html>");
 		String txt="";
 		if(locale.getLanguage().equals("en")){
 			txt = "<html><body><b><font size=6>Smash Uploader</font></b> is an <i>OpenSource</i> plugin for <b><font size=4>UpShot</font></b>, " +
@@ -295,13 +298,13 @@ public class About extends JDialog implements ActionListener {
 				this.dispose();
 		else if(s.equals("fr")){
 			locale = new Locale("fr","FR");
-			msg = ResourceBundle.getBundle("doc/trans", locale);
+			msg = ResourceBundle.getBundle(languages, locale);
 			this.displayLanguage();
 			origin.setResourceBundle(msg);
 		}
 		else if(s.equals("en")){
 			locale = new Locale("en","US");
-			msg = ResourceBundle.getBundle("doc/trans", locale);
+			msg = ResourceBundle.getBundle(languages, locale);
 			this.displayLanguage();
 			origin.setResourceBundle(msg);
 		}
