@@ -74,6 +74,8 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		this.getContentPane().setBackground(Color.decode("#656565"));
 		this.getContentPane().setForeground(Color.WHITE);
 		
+		this.setSize(250, 130);
+		
 		answer=0;
 		this.uc=uc;
 		login=new String();
@@ -108,7 +110,8 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		gbc.insets=ins;
 		gbc.gridwidth=1;
 		gbc.ipady=20;
-		gbc.anchor=GridBagConstraints.NORTHEAST;
+		gbc.anchor = GridBagConstraints.NORTHEAST;
+		gbc.fill = GridBagConstraints.NONE ;
 		gbl.setConstraints(loginlab, gbc);
 		
 		gbc.gridx=1;
@@ -127,17 +130,20 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		gbc.gridx=1;
 		gbc.gridwidth=2;
 		gbc.ipady=0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
 		gbc.anchor=GridBagConstraints.SOUTHWEST;
 		gbl.setConstraints(passwdbox, gbc);
 		
 		gbc.gridy=2;
 		ins = new Insets(0, 3, 0, 0);
 		gbc.insets=ins;
+		gbc.fill = GridBagConstraints.NONE ;
 		gbc.anchor=GridBagConstraints.CENTER;
 		gbl.setConstraints(message, gbc);
 		
 		gbc.gridx=0;
 		gbc.gridy=3;
+		gbc.gridwidth=1;
 		ins = new Insets(2, 3, 5, 3);
 		gbc.insets=ins;
 		gbc.ipady=0;
@@ -145,7 +151,6 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		gbl.setConstraints(cancel, gbc);
 		
 		gbc.gridx=2;
-		gbc.gridwidth=1;
 		gbc.anchor=GridBagConstraints.SOUTHEAST;
 		gbl.setConstraints(ok, gbc);
 		
@@ -159,7 +164,6 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		this.add(ok);
 		
 		init();
-		this.pack();
 		this.setLocationRelativeTo(origin);
 	}
 	
@@ -178,7 +182,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	public void displayLanguage(){
 		this.setTitle(msg.getString("login_title"));
 		cancel.setText(msg.getString("cancel"));
-		passwdlab.setText(msg.getString("passwd"));
+		passwdlab.setText(msg.getString("passwd")+" :");
 	}
 	
 	@Override

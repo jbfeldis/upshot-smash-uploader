@@ -25,6 +25,7 @@ package main;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -43,6 +44,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
@@ -563,7 +567,21 @@ public class Smash extends JFrame implements ActionListener{
 			}
 		}
 		else if(s.equals("help")){
-			
+			try {
+				if ( Desktop.isDesktopSupported() ) {//Test if the class Desktop is supported on the OS
+					Desktop desktop = Desktop.getDesktop();
+					
+					if (desktop.isSupported(Desktop.Action.BROWSE)) {//test if the browse method is also supported
+						desktop.browse(new URI("http://smashuploader.com/help"));
+					}
+				}
+			} catch (MalformedURLException e) {
+				JOptionPane.showMessageDialog(Smash.getFrames()[0], "About.actionPerformed() MalformedURException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (IOException e) {
+				JOptionPane.showMessageDialog(Smash.getFrames()[0], "About.actionPerformed() IOException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			} catch (URISyntaxException e) {
+				JOptionPane.showMessageDialog(Smash.getFrames()[0], "About.actionPerformed() URISyntaxException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			}
 		}
 		else if(s.equals("fr")){
 			locale = new Locale("fr","FR");
