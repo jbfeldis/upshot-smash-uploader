@@ -98,7 +98,8 @@ public class Login extends JDialog implements ActionListener, Serializable {
 			cancel.addActionListener(this);
 			cancel.setOpaque(false);
 			cancel.setBackground(this.getContentPane().getBackground());
-		remember = new JCheckBox("Remember me", false);
+		remember = new JCheckBox();
+			remember.setSelected(false);
 			remember.setOpaque(false);
 			remember.setBackground(this.getContentPane().getBackground());
 		
@@ -204,6 +205,7 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	public void displayLanguage(){
 		this.setTitle(msg.getString("login_title"));
 		cancel.setText(msg.getString("cancel"));
+		remember.setText(msg.getString("remember"));
 	}
 	
 	/**
