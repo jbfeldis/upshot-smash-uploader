@@ -24,6 +24,7 @@
 package main;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -60,6 +61,7 @@ public class ImageEditor extends JDialog implements ActionListener {
 	private JTextField title;
 	private JButton ok;
 	private Image image;
+	private ImageFile imf;
 	private int w,h, scale;
 	private String new_title;
 	private ResourceBundle msg;
@@ -70,6 +72,9 @@ public class ImageEditor extends JDialog implements ActionListener {
 		this.getContentPane().setBackground(Color.decode("#656565"));
 		this.getContentPane().setForeground(Color.WHITE);
 		scale=80;
+		Dimension dim = new Dimension(scale,scale);
+		this.imf=imf;
+		Smash.getFrames()[0].setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		
 		try {
 			BufferedImage bi = ImageIO.read(imf.getFile());
@@ -87,11 +92,13 @@ public class ImageEditor extends JDialog implements ActionListener {
 		}
 		
 		panel = new JPanel(true);
-			panel.setPreferredSize(new Dimension(scale,scale));
+			panel.setPreferredSize(dim);
+			panel.setMinimumSize(dim);
+			panel.setSize(dim);
 			panel.setDoubleBuffered(true);
 			panel.setOpaque(false);
-		name = new JLabel(imf.getFile().getAbsolutePath());
-		size = new JLabel(imf.getFile().length()/1024+"Ko");
+		name = new JLabel();//imf.getFile().getAbsolutePath()
+		size = new JLabel();//imf.getFile().length()/1024+"Ko"
 		titlelab = new JLabel();
 		title = new JTextField(imf.getTitle(),20);
 			title.setActionCommand("OK");
@@ -108,6 +115,7 @@ public class ImageEditor extends JDialog implements ActionListener {
 		gbc.gridwidth=2;
 		gbc.gridheight=2;
 		gbc.insets=ins;
+		gbc.fill=GridBagConstraints.BOTH;
 		gbc.anchor=GridBagConstraints.NORTHWEST;
 		gbl.setConstraints(panel, gbc);
 		
@@ -129,6 +137,7 @@ public class ImageEditor extends JDialog implements ActionListener {
 		gbc.gridy=2;
 		ins = new Insets(5,5,0,5);
 		gbc.insets=ins;
+		gbc.fill=GridBagConstraints.VERTICAL;
 		gbc.anchor=GridBagConstraints.SOUTHWEST;
 		gbl.setConstraints(titlelab, gbc);
 		
@@ -139,6 +148,8 @@ public class ImageEditor extends JDialog implements ActionListener {
 		
 		gbc.gridy=3;
 		gbc.gridx=2;
+		ins = new Insets(5,5,5,5);
+		gbc.insets=ins;
 		gbc.anchor=GridBagConstraints.SOUTHEAST;
 		gbl.setConstraints(ok, gbc);
 		
@@ -168,13 +179,18 @@ public class ImageEditor extends JDialog implements ActionListener {
 	 */
 	private void displayLanguage(){
 		titlelab.setText(msg.getString("title")+" :");
+		name.setText(msg.getString("filename")+" : "+imf.getFile().getAbsolutePath());
+		size.setText(msg.getString("size")+" : "+imf.getFile().length()/1024+"Ko");
+		this.pack();
+		Smash.getFrames()[0].setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
 	
 	public void paint(Graphics g){
 		super.paintComponents(g);
 		w = image.getWidth(null);
 		h = image.getHeight(null);
-		g.drawImage(image, (panel.getWidth()-w)/2+5, (panel.getHeight()-h)/2+27,image.getWidth(null), image.getHeight(null), null);
+		g.drawImage(image, (int)g.getClipBounds().getX()+5, (int)g.getClipBounds().getY()+5, w, h, null);
+//		g.drawImage(image, (panel.getWidth()-w)/2+5, (panel.getHeight()-h)/2+27,image.getWidth(null), image.getHeight(null), null);
 	}
 
 	@Override

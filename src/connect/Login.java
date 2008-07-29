@@ -34,6 +34,7 @@ import java.io.Serializable;
 import java.util.ResourceBundle;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -53,16 +54,21 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	private static final long serialVersionUID = 3399486907330854821L;
 	private GridBagLayout gbl;
 	private GridBagConstraints gbc;
-	private JLabel loginlab, passwdlab, message;
+	private JLabel loginlab, tokenlab, message;
 	private JTextField loginbox;
-	private JPasswordField passwdbox;
+	private JPasswordField tokenbox;
 	private JButton ok, cancel;
-	private String login, passwd;
+	private JCheckBox remember;
+	private String login, token;
 	private char [] pass;
 	private transient UpConnection uc;//need to be transient because HttpURLConnection can't be serialized 
 	private transient ResourceBundle msg;//can't be serialized either
 	private Integer answer;
-	
+
+	public boolean hasMemory() {
+		return remember.isSelected();
+	}
+
 	/**
 	 * Constructor of logging dialog box
 	 * @param origin will always be an instance of Smash class
@@ -74,96 +80,112 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		this.getContentPane().setBackground(Color.decode("#656565"));
 		this.getContentPane().setForeground(Color.WHITE);
 		
-		this.setSize(250, 130);
-		
 		answer=0;
 		this.uc=uc;
 		login=new String();
-		passwd=new String();
+		token=new String();
 		
 		loginbox = new JTextField(10);
-		passwdbox= new JPasswordField(10);
-			passwdbox.setActionCommand("OK");
-			passwdbox.addActionListener(this);
+		tokenbox= new JPasswordField(15);
+			tokenbox.setActionCommand("OK");
+			tokenbox.addActionListener(this);
 		ok = new JButton("OK");
 			ok.addActionListener(this);
 			ok.setOpaque(false);
+			ok.setBackground(this.getContentPane().getBackground());
 		cancel = new JButton();
 			cancel.setActionCommand("Cancel");
 			cancel.addActionListener(this);
 			cancel.setOpaque(false);
+			cancel.setBackground(this.getContentPane().getBackground());
+		remember = new JCheckBox("Remember me", false);
+			remember.setOpaque(false);
+			remember.setBackground(this.getContentPane().getBackground());
 		
 		loginlab = new JLabel("E-mail :");
 			loginlab.setLabelFor(loginbox);
-		passwdlab = new JLabel();
-			passwdlab.setLabelFor(passwdbox);
+		tokenlab = new JLabel("Token :");
+			tokenlab.setLabelFor(tokenbox);
 		message = new JLabel();
-			Font font = new Font("Verdana",Font.BOLD,10);
+			Font font = new Font("Verdana",Font.BOLD,11);
 			message.setFont(font);
 
+		init();
+			
 		gbl = new GridBagLayout();
 		gbc = new GridBagConstraints();
-		Insets ins = new Insets(2, 3, 0, 3);
 		
 		gbc.gridx=0;
 		gbc.gridy=0;
+		Insets ins = new Insets(5, 5, 2, 0);
+		gbc.insets=ins;
+		gbc.gridwidth=3;
+		gbc.anchor = GridBagConstraints.CENTER;
+		gbc.fill = GridBagConstraints.HORIZONTAL ;
+		gbl.setConstraints(message, gbc);
+		
+		gbc.gridy=1;
+		ins = new Insets(0, 5, 0, 0);
 		gbc.insets=ins;
 		gbc.gridwidth=1;
-		gbc.ipady=20;
-		gbc.anchor = GridBagConstraints.NORTHEAST;
+		gbc.anchor = GridBagConstraints.EAST;
 		gbc.fill = GridBagConstraints.NONE ;
 		gbl.setConstraints(loginlab, gbc);
 		
 		gbc.gridx=1;
 		gbc.gridwidth=2;
-		gbc.ipady=0;
-		gbc.anchor=GridBagConstraints.NORTHWEST;
+		ins = new Insets(0, 0, 0, 2);
+		gbc.insets=ins;
+		gbc.anchor=GridBagConstraints.WEST;
 		gbl.setConstraints(loginbox, gbc);
 		
 		gbc.gridx=0;
-		gbc.gridy=1;
+		gbc.gridy=2;
 		gbc.gridwidth=1;
-		gbc.ipady=5;
-		gbc.anchor=GridBagConstraints.SOUTHEAST;
-		gbl.setConstraints(passwdlab, gbc);
+		ins = new Insets(0, 5, 0, 0);
+		gbc.insets=ins;
+		gbc.anchor=GridBagConstraints.EAST;
+		gbl.setConstraints(tokenlab, gbc);
 		
 		gbc.gridx=1;
 		gbc.gridwidth=2;
-		gbc.ipady=0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gbc.anchor=GridBagConstraints.SOUTHWEST;
-		gbl.setConstraints(passwdbox, gbc);
-		
-		gbc.gridy=2;
-		ins = new Insets(0, 3, 0, 0);
+		ins = new Insets(0, 0, 0, 2);
 		gbc.insets=ins;
-		gbc.fill = GridBagConstraints.NONE ;
-		gbc.anchor=GridBagConstraints.CENTER;
-		gbl.setConstraints(message, gbc);
+		gbc.anchor=GridBagConstraints.WEST;
+		gbl.setConstraints(tokenbox, gbc);
+		
+		gbc.gridy=3;
+		gbc.gridx=0;
+		ins = new Insets(0, 5, 0, 0);
+		gbc.insets=ins;
+		gbc.anchor=GridBagConstraints.EAST;
+		gbl.setConstraints(remember, gbc);
 		
 		gbc.gridx=0;
-		gbc.gridy=3;
-		gbc.gridwidth=1;
-		ins = new Insets(2, 3, 5, 3);
+		gbc.gridy=4;
+		ins = new Insets(0, 2, 2, 0);
 		gbc.insets=ins;
-		gbc.ipady=0;
 		gbc.anchor=GridBagConstraints.SOUTHWEST;
 		gbl.setConstraints(cancel, gbc);
 		
 		gbc.gridx=2;
+		ins = new Insets(0, 0, 2, 2);
+		gbc.insets=ins;
 		gbc.anchor=GridBagConstraints.SOUTHEAST;
 		gbl.setConstraints(ok, gbc);
 		
 		this.getContentPane().setLayout(gbl);
+		this.add(message);
 		this.add(loginlab);
 		this.add(loginbox);
-		this.add(passwdlab);
-		this.add(passwdbox);
-		this.add(message);
+		this.add(tokenlab);
+		this.add(tokenbox);
+		this.add(remember);
 		this.add(cancel);
 		this.add(ok);
 		
 		init();
+		this.pack();
 		this.setLocationRelativeTo(origin);
 	}
 	
@@ -182,7 +204,37 @@ public class Login extends JDialog implements ActionListener, Serializable {
 	public void displayLanguage(){
 		this.setTitle(msg.getString("login_title"));
 		cancel.setText(msg.getString("cancel"));
-		passwdlab.setText(msg.getString("passwd")+" :");
+	}
+	
+	/**
+	 * After unserialization of login params, the Login object thus created
+	 * need to know the UpConnection params (because it is not serialized with the Login object)
+	 * @param uc The current UpConnection 
+	 */
+	public void setConnectionConfig(UpConnection uc){
+		this.uc=uc;
+		uc.setUser(login, token);
+	}
+	
+	/**
+	 * Clear all fields. 
+	 * Usefull for initialization
+	 */
+	public void init(){
+		loginbox.setText("");
+		tokenbox.setText("");
+		login = new String("");
+		token = new String("");
+		message.setText("");
+		pass = new char[128];
+	}
+	
+	/**
+	 * Used to retrieve either the user id, or the error code.
+	 * @return the user's id or the error code
+	 */
+	public int getAnswer(){
+		return answer;
 	}
 	
 	@Override
@@ -190,24 +242,24 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		String s = ae.getActionCommand();
 		if(s.equals("OK")){
 			login=new String();
-			passwd=new String();
+			token=new String();
 			answer=0;
 			
 			login=loginbox.getText();
 			pass = new char[128];
-			pass = passwdbox.getPassword();
+			pass = tokenbox.getPassword();
 			
 			for(char c : pass)
-				passwd+=c;
+				token+=c;
 			pass=null;
 			
-			if(login.isEmpty() || passwd.isEmpty()){
+			if(login.isEmpty() || token.isEmpty()){
 				message.setForeground(Color.decode("#FF6600"));
 				message.setText(msg.getString("warn_empty"));
 				this.pack();
 			}
 			else{
-				uc.setUser(login, passwd);
+				uc.setUser(login, token);
 
 				if((answer=uc.getId())<=0){
 					init();
@@ -223,36 +275,5 @@ public class Login extends JDialog implements ActionListener, Serializable {
 		else if (s.equals("Cancel")){
 			this.dispose();
 		}
-	}
-	
-	/**
-	 * After unserialization of login params, the Login object thus created
-	 * need to know the UpConnection params (because it is not serialized with the Login object)
-	 * @param uc The current UpConnection 
-	 */
-	public void setConnectionConfig(UpConnection uc){
-		this.uc=uc;
-		uc.setUser(login, passwd);
-	}
-	
-	/**
-	 * Clear all fields. 
-	 * Usefull for initialization
-	 */
-	public void init(){
-		loginbox.setText("");
-		passwdbox.setText("");
-		login = new String("");
-		passwd = new String("");
-		message.setText("");
-		pass = new char[128];
-	}
-	
-	/**
-	 * Used to retrieve either the user id, or the error code.
-	 * @return the user's id or the error code
-	 */
-	public int getAnswer(){
-		return answer;
 	}
 }

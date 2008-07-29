@@ -281,18 +281,21 @@ public class Smash extends JFrame implements ActionListener{
         	logger.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         	logger.setOpaque(false);
         	logger.setBackground(background);
+        	logger.setFocusPainted(false);
         helper = new JButton(Smash.getIcon("help.png"));
         	helper.setActionCommand("help");
 	        helper.addActionListener(this);
 	        helper.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
 	        helper.setOpaque(false);
 	        helper.setBackground(background);
+	        helper.setFocusPainted(false);
         abouter = new JButton(Smash.getIcon("upshot_logo.png"));
         	abouter.setActionCommand("about");
         	abouter.addActionListener(this);
         	abouter.setBorder(BorderFactory.createLineBorder(Color.GRAY, 1));
         	abouter.setOpaque(false);
         	abouter.setBackground(background);
+        	abouter.setFocusPainted(false);
         sender = new JButton();
         	sender.setActionCommand("SEND");
         	sender.addActionListener(this);
@@ -371,7 +374,7 @@ public class Smash extends JFrame implements ActionListener{
         pgbl.setConstraints(abouter, pgbc);
         
         pgbc.gridx=3;
-        pgbc.fill=GridBagConstraints.HORIZONTAL;
+        pgbc.fill=GridBagConstraints.BOTH;
         pgbc.ipady=10;
         pgbc.insets=new Insets(0,1,1,2);
         pgbl.setConstraints(sender, pgbc);
@@ -478,7 +481,8 @@ public class Smash extends JFrame implements ActionListener{
 		
 		
 		if(log.getAnswer()>0){
-			save();
+			if(log.hasMemory())
+				save();
 			if(model.getImages().size()>0)
 				sender.setEnabled(true);
 		}
@@ -549,11 +553,17 @@ public class Smash extends JFrame implements ActionListener{
 			log.setVisible(true);
 			
 			if(log.getAnswer()>0){
-				save();
+				if(log.hasMemory())
+					save();
 				if(model.getImages().size()>0)
 					sender.setEnabled(true);
 			}
-			else sender.setEnabled(false);
+			else {
+				File fconfig = new File(home+folder+file);
+				if(fconfig.exists())
+					fconfig.delete();
+				sender.setEnabled(false);
+			}
 		}
 		else if(s.equals("about")){
 			if(about==null){

@@ -173,6 +173,7 @@ public class About extends JDialog implements ActionListener {
 	
 		ok = new JButton("ok");
 		ok.addActionListener(this);
+		ok.setBackground(this.getContentPane().getBackground());
 		
 		links = new JButton[4];// !!!! Remind the size to the number of elements ;)
 		links[0] = new JButton("<html><body><u>http://upshotit.com</u></body></html>");
@@ -193,6 +194,7 @@ public class About extends JDialog implements ActionListener {
 			btn.setFocusable(false);
 			btn.setFont(font);
 			btn.setCursor(hand);
+			btn.setBackground(this.getContentPane().getBackground());
 		}
 		
 		GridBagLayout gbl = new GridBagLayout();
@@ -201,6 +203,7 @@ public class About extends JDialog implements ActionListener {
 		
 		gbc.gridx=0;
 		gbc.gridy=0;
+		gbc.gridwidth=2;
 		gbc.anchor = GridBagConstraints.NORTHWEST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbl.setConstraints(flags, gbc);
@@ -218,15 +221,17 @@ public class About extends JDialog implements ActionListener {
 		gbc.anchor = GridBagConstraints.SOUTHWEST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(0, 5, 0, 5);
+		gbc.gridwidth=1;
 		
 		for(int i=0; i<(links.length);i++){
 			gbc.gridy=i+3;
 			if(links[i].getActionCommand().equals("contactus"))
-				gbc.insets = new Insets(0, 20, 2, 5);
+				gbc.insets = new Insets(10, 20, 10, 5);
 			gbl.setConstraints(links[i], gbc);
 		}
 		
-		gbc.gridy=links.length+3;
+		gbc.gridy=links.length+2;
+		gbc.gridx=1;
 		gbc.anchor = GridBagConstraints.SOUTHEAST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(0, 0, 10, 10);
@@ -276,10 +281,10 @@ public class About extends JDialog implements ActionListener {
 			}
 			else if(locale.getLanguage().equals("fr")){
 				txt = "<html><body><b><font size=6>Smash Uploader</font></b> est un plugin <i>OpenSource</i> pour <b><font size=4>UpShot</font></b>, " +
-								 "distribué par <b>Studio Melipone</b> sous la licence : GNU Lesser General Public License.<br>" +
+								 "distribu&eacute; par <b>Studio Melipone</b> sous la licence : GNU Lesser General Public License.<br>" +
 								 "<br>" +
-								 "Le but de cette application <i>multi-platformes</i> est de vous aider à <b><font size=5>déposer</font></b> plusieur <b>images</b> depuis " +
-								 "<u><font size=4>votre bureau</font></u> jusque dans une liste d'images, pour les <b><font size=5>envoyer</font></b> instantanément sur <u><font size=4>votre compte UpShot</font></u>.<br>" +
+								 "Le but de cette application <i>multi-platformes</i> est de vous aider &agrave; <b><font size=5>d&eacute;poser</font></b> plusieur <b>images</b> depuis " +
+								 "<u><font size=4>votre bureau</font></u> jusque dans une liste d'images, pour les <b><font size=5>envoyer</font></b> instantan&eacute;ment sur <u><font size=4>votre compte UpShot</font></u>.<br>" +
 								 "<br><br>" +
 								 "<font size=3>" +
 								 	"Smash Uploader v.1.0<br>" +

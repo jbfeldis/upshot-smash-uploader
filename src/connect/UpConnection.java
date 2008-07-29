@@ -23,6 +23,7 @@
  */
 package connect;
 
+import java.awt.Cursor;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -66,11 +67,12 @@ public class UpConnection implements Runnable{
      * The login is the users email.
      * @param log The Login object used to retrieve the login and password
      */
-    public void setUser(String login, String passwd){
-		userPass = login+":"+passwd;
+    public void setUser(String login, String token){
+		userPass = login+":"+token;
 		encoding = new sun.misc.BASE64Encoder().encode(userPass.getBytes());
 		logged=true;
 		setup("users/get_id.xml");
+		
     }
     
 	/**
@@ -125,7 +127,6 @@ public class UpConnection implements Runnable{
 				id=Integer.parseInt(s);
 				return Integer.parseInt(s);
 			} catch (IOException e) {
-//				JOptionPane.showMessageDialog(Smash.getFrames()[0], "UpConnection.getId() IOException : "+e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				return -1;
 			} 
 			finally{
@@ -147,8 +148,7 @@ public class UpConnection implements Runnable{
 			connection=(HttpURLConnection)url.openConnection();
 			connection.setAllowUserInteraction(true);
 			//connection.setRequestProperty("charset","utf-8");
-			//connection.setRequestProperty("User-Agent", "Mozilla/4.0");
-			connection.setRequestProperty("Host", "localhost:3000");
+			connection.setRequestProperty("Host", "localhost:3000"); // FIXME localhost-->www.upshotit.com
 			connection.setRequestProperty("Accept", "*/*");
 			connection.setRequestProperty("Content-Type", "text/xml");
 	        connection.setRequestProperty("Authorization", "Basic " + encoding);
@@ -225,6 +225,7 @@ public class UpConnection implements Runnable{
 	public void run() {
 
 		String answer="";
+		Smash.getFrames()[0].setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		
 		for(ImageFile imf : list){
 			if(!imf.isSent()){
@@ -237,5 +238,6 @@ public class UpConnection implements Runnable{
 				model.fireTableDataChanged();
 			}
 		}
+		Smash.getFrames()[0].setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}
 }
