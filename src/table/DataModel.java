@@ -118,7 +118,7 @@ public class DataModel extends AbstractTableModel{
 		case 0: return null;
 		case 1: return imagesList.elementAt(rowIndex).getTitle();
 		case 2: return getMIMEType(imagesList.elementAt(rowIndex).getFile()) ;
-		case 3: return imagesList.elementAt(rowIndex).getFile().length()/1024+"Ko";
+		case 3: return imagesList.elementAt(rowIndex).getFile().length()/1024+" Ko";
 		case 4: return null;
 		}
 		return "ERROR";

@@ -228,17 +228,18 @@ public class Smash extends JFrame implements ActionListener{
 		 * so we have to customize it singly BUT as it was too ugly, 
 		 * we replaced it with the JPanel myHead defined further .
 		 * 
-		 * JTableHeader jth = table.getTableHeader();
-		 * jth.setBackground(background);
-		 * jth.setForeground(foreground);
-		 * font = new Font("Verdana",Font.BOLD,10);
-		 * jth.setFont(font);
-		 * jth.setOpaque(false);
-		 * jth.setResizingAllowed(false);
-		 * jth.enableInputMethods(false);
-		 * jth.setReorderingAllowed(false);
-		 * 
-		 * */
+		 * DO NOT FORGET to comment line 225 before uncommenting those lines
+		 */
+		
+//		JTableHeader jth = table.getTableHeader();
+//		jth.setBackground(background);
+//		jth.setForeground(foreground);
+//		font = new Font("Verdana",Font.BOLD,10);
+//		jth.setFont(font);
+//		jth.setOpaque(false);
+//		jth.setResizingAllowed(false);
+//		jth.enableInputMethods(false);
+//		jth.setReorderingAllowed(false);
 		
 		/*Column Delete*/
 		TableColumn column = table.getColumnModel().getColumn(0);
@@ -251,12 +252,12 @@ public class Smash extends JFrame implements ActionListener{
 		
 		/*Column Title*/
 		column = table.getColumnModel().getColumn(1);
-		column.setPreferredWidth(135);
+		column.setPreferredWidth(180);
 		column.setResizable(false);
 		
 		/*Column Format*/
 		column = table.getColumnModel().getColumn(2);
-		column.setPreferredWidth(75);
+		column.setPreferredWidth(60);
 		column.setResizable(false);
 		
 		/*Column Size*/
@@ -266,13 +267,13 @@ public class Smash extends JFrame implements ActionListener{
 		
 		/*Column Edit*/
 		column = table.getColumnModel().getColumn(4);
-		column.setPreferredWidth(10);
+		column.setPreferredWidth(55);
 		column.setResizable(false);
         editCellRender = new EditCellRender();
         editCellEditor = new EditCellEditor(model);
 		column.setCellRenderer(editCellRender);
 		column.setCellEditor(editCellEditor);
-        
+		
 		/* Now let's display our elements as we want */
 		
         logger = new JButton(Smash.getIcon("user.png"));

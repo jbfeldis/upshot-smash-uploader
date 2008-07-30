@@ -105,6 +105,8 @@ public class ImageEditor extends JDialog implements ActionListener {
 			title.addActionListener(this);
 		ok = new JButton("OK");
 			ok.addActionListener(this);
+			ok.setOpaque(false);
+			ok.setBackground(this.getContentPane().getBackground());
 		
 		GridBagLayout gbl = new GridBagLayout();
 		GridBagConstraints gbc = new GridBagConstraints();
