@@ -144,11 +144,11 @@ public class UpConnection implements Runnable{
 	 */
 	private void setup(String path){
 		try {
-			url = new URL("http://localhost:3000/en/"+path);
+			url = new URL("http://upshotit.com/en/"+path);
 			connection=(HttpURLConnection)url.openConnection();
 			connection.setAllowUserInteraction(true);
 			//connection.setRequestProperty("charset","utf-8");
-			connection.setRequestProperty("Host", "localhost:3000"); // FIXME localhost-->www.upshotit.com
+			connection.setRequestProperty("Host", "upshotit.com");
 			connection.setRequestProperty("Accept", "*/*");
 			connection.setRequestProperty("Content-Type", "text/xml");
 	        connection.setRequestProperty("Authorization", "Basic " + encoding);

@@ -174,6 +174,7 @@ public class About extends JDialog implements ActionListener {
 		ok = new JButton("ok");
 		ok.addActionListener(this);
 		ok.setBackground(this.getContentPane().getBackground());
+		ok.setFocusPainted(false);
 		
 		links = new JButton[4];// !!!! Remind the size to the number of elements ;)
 		links[0] = new JButton("<html><body><u>http://upshotit.com</u></body></html>");

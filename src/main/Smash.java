@@ -71,7 +71,6 @@ import table.DeleteCellEditor;
 import table.DeleteCellRender;
 import table.EditCellEditor;
 import table.EditCellRender;
-
 import connect.Login;
 import connect.UpConnection;
 
@@ -482,8 +481,7 @@ public class Smash extends JFrame implements ActionListener{
 		
 		
 		if(log.getAnswer()>0){
-			if(log.hasMemory())
-				save();
+			save();
 			if(model.getImages().size()>0)
 				sender.setEnabled(true);
 		}
@@ -554,17 +552,11 @@ public class Smash extends JFrame implements ActionListener{
 			log.setVisible(true);
 			
 			if(log.getAnswer()>0){
-				if(log.hasMemory())
-					save();
+				save();
 				if(model.getImages().size()>0)
 					sender.setEnabled(true);
 			}
-			else {
-				File fconfig = new File(home+folder+file);
-				if(fconfig.exists())
-					fconfig.delete();
-				sender.setEnabled(false);
-			}
+			else sender.setEnabled(false);
 		}
 		else if(s.equals("about")){
 			if(about==null){
