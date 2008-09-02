@@ -344,38 +344,36 @@ public class Smash extends JFrame implements ActionListener{
         
         pgbc.gridx=0;
         pgbc.gridy=0;
-        pgbc.gridwidth=4;
+        pgbc.gridwidth=2;
         pgbc.fill=GridBagConstraints.HORIZONTAL;
         pgbc.anchor=GridBagConstraints.NORTH;
         pgbl.setConstraints(desk, pgbc);
         
         pgbc.gridy=1;
-        pgbc.gridx=2;
         pgbc.anchor=GridBagConstraints.CENTER;
         pgbl.setConstraints(myHead, pgbc);
         
         pgbc.gridy=2;
-        pgbc.gridx=0;
         pgbl.setConstraints(scroll, pgbc);
         
         pgbc.gridy=3;
         pgbc.gridwidth=1;
-        pgbc.ipady=10;
-        pgbc.ipadx=10;
         pgbc.insets=new Insets(0,2,1,1);
         pgbc.anchor=GridBagConstraints.SOUTHWEST;
         pgbl.setConstraints(logger, pgbc);
         
-        pgbc.gridx=1;
+        pgbc.gridy=4;;
         pgbc.insets=new Insets(0,1,1,1);
         pgbl.setConstraints(helper, pgbc);
         
-        pgbc.gridx=2;
+        pgbc.gridy=5;
         pgbl.setConstraints(abouter, pgbc);
         
-        pgbc.gridx=3;
+        pgbc.gridx=1;
+        pgbc.gridy=3;
+        pgbc.gridheight=3;
+        pgbc.gridwidth=2;
         pgbc.fill=GridBagConstraints.BOTH;
-        pgbc.ipady=10;
         pgbc.insets=new Insets(0,1,1,2);
         pgbl.setConstraints(sender, pgbc);
         
@@ -486,7 +484,7 @@ public class Smash extends JFrame implements ActionListener{
 				sender.setEnabled(true);
 		}
 		else sender.setEnabled(false);
-		
+	this.pack();
       this.setLocationRelativeTo(null);
 	}
 
