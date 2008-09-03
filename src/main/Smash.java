@@ -117,9 +117,6 @@ public class Smash extends JFrame implements ActionListener{
         languages = "doc/languages/trans";
         msg = ResourceBundle.getBundle(languages, locale);
         
-        Dimension dim = new Dimension(680,420);
-        this.getContentPane().setSize(dim);
-        
         /* 
          * STEP 0: prepare folders and files needed
          * for user's preferences
@@ -182,12 +179,14 @@ public class Smash extends JFrame implements ActionListener{
         pane = new JPanel();
         pane.setOpaque(false);
         pane.setBorder(BorderFactory.createEmptyBorder());
+        
+        final Image back = getIcon("dropzone.png").getImage();
+		
         desk = new JDesktopPane(){
 			private static final long serialVersionUID = 1L;
-
+			
 			public void paint(Graphics g){
 				super.paintComponents(g);
-				Image back = getIcon("dropzone.png").getImage();
 				g.drawImage(back, 0, g.getClipBounds().y, g.getClipBounds().width, g.getClipBounds().height, null);
         	}
         };
@@ -196,13 +195,14 @@ public class Smash extends JFrame implements ActionListener{
         	table = new JTable(model);
         scroll = new JScrollPane(table);
         
+        Dimension dim = new Dimension(back.getWidth(null),back.getHeight(null));
         desk.setSize(dim);
         desk.setPreferredSize(dim);
         desk.setRequestFocusEnabled(true);
         desk.requestFocus();
         desk.setBorder(BorderFactory.createEmptyBorder());
         
-        scroll.setPreferredSize(new Dimension(680,150));
+        scroll.setPreferredSize(new Dimension(back.getWidth(null),150));
         scroll.setBackground(background);
         scroll.setForeground(foreground);
         scroll.setOpaque(false);
@@ -274,7 +274,7 @@ public class Smash extends JFrame implements ActionListener{
 		column.setCellEditor(editCellEditor);
 		
 		/* Now let's display our elements as we want */
-		
+		Dimension dimBtn = new Dimension(32, 32);
         logger = new JButton(Smash.getIcon("user.png"));
         	logger.setActionCommand("login");
         	logger.addActionListener(this);
@@ -282,6 +282,7 @@ public class Smash extends JFrame implements ActionListener{
         	logger.setOpaque(false);
         	logger.setBackground(background);
         	logger.setFocusPainted(false);
+        	logger.setPreferredSize(dimBtn);
         helper = new JButton(Smash.getIcon("help.png"));
         	helper.setActionCommand("help");
 	        helper.addActionListener(this);
@@ -289,6 +290,7 @@ public class Smash extends JFrame implements ActionListener{
 	        helper.setOpaque(false);
 	        helper.setBackground(background);
 	        helper.setFocusPainted(false);
+	        helper.setPreferredSize(dimBtn);
         abouter = new JButton(Smash.getIcon("upshot_logo.png"));
         	abouter.setActionCommand("about");
         	abouter.addActionListener(this);
@@ -296,6 +298,7 @@ public class Smash extends JFrame implements ActionListener{
         	abouter.setOpaque(false);
         	abouter.setBackground(background);
         	abouter.setFocusPainted(false);
+        	abouter.setPreferredSize(dimBtn);
         sender = new JButton();
         	sender.setActionCommand("SEND");
         	sender.addActionListener(this);
@@ -304,6 +307,8 @@ public class Smash extends JFrame implements ActionListener{
         	sender.setOpaque(false);
         	sender.setBackground(background);
         	sender.setForeground(foreground);
+        	Font fontBig = new Font("Verdana",Font.BOLD,28);
+        	sender.setFont(fontBig);
         	
         /*
          * Wiredly ugly coded customized header
@@ -358,12 +363,11 @@ public class Smash extends JFrame implements ActionListener{
         
         pgbc.gridy=3;
         pgbc.gridwidth=1;
-        pgbc.insets=new Insets(0,2,1,1);
+        pgbc.insets=new Insets(0,1,2,1);
         pgbc.anchor=GridBagConstraints.SOUTHWEST;
         pgbl.setConstraints(logger, pgbc);
         
         pgbc.gridy=4;;
-        pgbc.insets=new Insets(0,1,1,1);
         pgbl.setConstraints(helper, pgbc);
         
         pgbc.gridy=5;
@@ -374,7 +378,6 @@ public class Smash extends JFrame implements ActionListener{
         pgbc.gridheight=3;
         pgbc.gridwidth=2;
         pgbc.fill=GridBagConstraints.BOTH;
-        pgbc.insets=new Insets(0,1,1,2);
         pgbl.setConstraints(sender, pgbc);
         
         pane.setLayout(pgbl);
@@ -484,7 +487,7 @@ public class Smash extends JFrame implements ActionListener{
 				sender.setEnabled(true);
 		}
 		else sender.setEnabled(false);
-	this.pack();
+
       this.setLocationRelativeTo(null);
 	}
 
