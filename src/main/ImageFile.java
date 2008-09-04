@@ -33,7 +33,7 @@ import java.io.File;
  */
 public class ImageFile {
 	private File file;//the image file
-	private String title; //to have a title for the image different from the image filename
+	private String title; //to have an image's title different from the image filename
 	private int status;//0:ready, 1:sending, 2:sent
 
 	public ImageFile(File f){

@@ -113,6 +113,7 @@ public class Smash extends JFrame implements ActionListener{
         this.getContentPane().setBackground(background);
         this.getContentPane().setForeground(foreground);
         this.setIconImage(getIcon("upshot_logo.png").getImage());
+        //TODO Try to use SwingWorker to load ALL images needed in the application
         
         languages = "doc/languages/trans";
         msg = ResourceBundle.getBundle(languages, locale);
@@ -223,11 +224,12 @@ public class Smash extends JFrame implements ActionListener{
 		table.setFont(font);
 		table.setTableHeader(null);
 		
-		/* The header of the table is quite independant
+		/* FIXME customize the header correctly to obtain same effect as with the JPanel myHead
+		 * The header of the table is quite independant
 		 * so we have to customize it singly BUT as it was too ugly, 
 		 * we replaced it with the JPanel myHead defined further .
 		 * 
-		 * DO NOT FORGET to comment line 225 before uncommenting those lines
+		 * DO NOT FORGET to comment line : table.setTableHeader(null); before uncommenting those lines
 		 */
 		
 //		JTableHeader jth = table.getTableHeader();
@@ -411,6 +413,8 @@ public class Smash extends JFrame implements ActionListener{
          * STEP 2 : The transferHandler
          * 
          * One of the fundamental functionnality of the application is this transferHandler
+         * 
+         * see http://java.sun.com/docs/books/tutorial/uiswing/dnd/intro.html for details
          */
         handler = new TransferHandler() {
 
