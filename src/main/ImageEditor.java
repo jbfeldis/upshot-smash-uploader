@@ -76,6 +76,11 @@ public class ImageEditor extends JDialog implements ActionListener {
 		this.imf=imf;
 		Smash.getFrames()[0].setCursor(new Cursor(Cursor.WAIT_CURSOR));
 		
+		/*
+		 * TODO Try to use SwingWOrker or a ProgressBar to load the image
+		 * A ProgressBar in a separated thread should be enough,
+		 * and a little loader to inform the user can be cool.
+		 * */
 		try {
 			BufferedImage bi = ImageIO.read(imf.getFile());
 			image = bi.getScaledInstance(-1, -1, Image.SCALE_SMOOTH);//only to get an Image instance
